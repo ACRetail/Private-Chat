@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Private Chat</title>
 
   <style>
@@ -10,235 +10,490 @@
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f2f5f9;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #dfe5e8;
     }
 
-    /* LOGIN */
+    body {
+      overflow: hidden;
+    }
+
+    /* =========================
+       LOGIN
+    ========================= */
+
     #loginScreen {
       min-height: 100vh;
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       padding: 20px;
+      background: linear-gradient(135deg, #e8f0ff, #f7f9fb);
     }
 
     .login-box {
       width: 100%;
-      max-width: 380px;
-      background: white;
+      max-width: 390px;
+      background: #fff;
+      border-radius: 20px;
       padding: 30px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+      box-shadow: 0 12px 40px rgba(0,0,0,.14);
+    }
+
+    .login-logo {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      background: #128c7e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 34px;
     }
 
     .login-box h2 {
       text-align: center;
-      margin-top: 0;
-      margin-bottom: 25px;
+      margin: 0 0 25px;
+      color: #222;
     }
 
     .login-box input {
       width: 100%;
-      padding: 14px;
-      margin-bottom: 14px;
+      height: 48px;
       border: 1px solid #ddd;
       border-radius: 10px;
+      padding: 0 14px;
+      margin-bottom: 13px;
       font-size: 15px;
       outline: none;
     }
 
-    .login-box button {
+    .login-box input:focus {
+      border-color: #128c7e;
+    }
+
+    #loginButton {
       width: 100%;
-      padding: 14px;
-      border: none;
+      height: 48px;
+      border: 0;
       border-radius: 10px;
-      background: #2563eb;
+      background: #128c7e;
       color: white;
       font-size: 16px;
       cursor: pointer;
     }
 
-    .login-box button:hover {
-      background: #1d4ed8;
+    #loginButton:disabled {
+      opacity: .7;
     }
 
     #loginError {
-      color: #dc2626;
+      color: #d93025;
       text-align: center;
       margin-top: 12px;
       font-size: 14px;
     }
 
-    /* CHAT */
+    /* =========================
+       CHAT APP
+    ========================= */
+
     #chatScreen {
       display: none;
+      width: 100%;
       height: 100vh;
       flex-direction: column;
+      background: #efeae2;
     }
 
+    /* HEADER */
+
     .chat-header {
-      height: 65px;
-      background: #2563eb;
+      height: 64px;
+      flex-shrink: 0;
+      background: #075e54;
       color: white;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 15px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      padding: 0 12px;
+      box-shadow: 0 2px 5px rgba(0,0,0,.18);
+      z-index: 5;
     }
 
-    .chat-title {
-      font-size: 19px;
-      font-weight: bold;
-    }
-
-    .header-buttons {
+    .profile-area {
       display: flex;
-      gap: 7px;
       align-items: center;
+      min-width: 0;
     }
 
-    .header-buttons button {
-      border: none;
-      background: rgba(255,255,255,0.18);
+    .profile-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #128c7e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      min-width: 0;
+    }
+
+    .profile-name {
+      font-size: 16px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .online-status {
+      margin-top: 2px;
+      font-size: 12px;
+      color: #d8f8f2;
+      white-space: nowrap;
+    }
+
+    .online-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #25d366;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .offline-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #aaa;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .header-actions button {
+      border: 0;
+      background: transparent;
       color: white;
-      padding: 8px 10px;
-      border-radius: 8px;
       cursor: pointer;
-      font-size: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-size: 17px;
     }
 
-    .header-buttons button:hover {
-      background: rgba(255,255,255,0.28);
+    .header-actions button:hover {
+      background: rgba(255,255,255,.13);
     }
 
-    #logoutButton {
-      background: #dc2626;
+    #clearChatButton:hover {
+      background: rgba(255,0,0,.25);
     }
 
-    #clearChatButton {
-      background: #b91c1c;
-    }
+    /* =========================
+       CHAT BACKGROUND
+    ========================= */
 
-    /* MESSAGES */
     #messages {
       flex: 1;
       overflow-y: auto;
-      padding: 15px;
+      padding: 14px 7%;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 3px;
+      background-color: #efeae2;
+      background-image:
+        radial-gradient(rgba(0,0,0,.025) 1px, transparent 1px);
+      background-size: 18px 18px;
+    }
+
+    .date-separator {
+      align-self: center;
+      background: #d9fdd3;
+      color: #54656f;
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      margin: 12px 0 8px;
+      box-shadow: 0 1px 1px rgba(0,0,0,.08);
+    }
+
+    /* =========================
+       MESSAGE BUBBLES
+    ========================= */
+
+    .message-row {
+      width: 100%;
+      display: flex;
+      margin-bottom: 2px;
+    }
+
+    .message-row.mine {
+      justify-content: flex-end;
+    }
+
+    .message-row.theirs {
+      justify-content: flex-start;
     }
 
     .message {
-      max-width: 75%;
-      padding: 10px 13px;
-      border-radius: 14px;
-      word-wrap: break-word;
-      white-space: pre-wrap;
+      position: relative;
+      max-width: min(75%, 600px);
+      padding: 7px 9px 5px;
+      border-radius: 8px;
       font-size: 15px;
       line-height: 1.4;
+      word-break: break-word;
+      box-shadow: 0 1px 1px rgba(0,0,0,.08);
     }
 
     .message.mine {
-      align-self: flex-end;
-      background: #2563eb;
-      color: white;
-      border-bottom-right-radius: 4px;
+      background: #d9fdd3;
+      border-top-right-radius: 2px;
     }
 
     .message.theirs {
-      align-self: flex-start;
-      background: white;
-      color: #222;
-      border-bottom-left-radius: 4px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      background: #fff;
+      border-top-left-radius: 2px;
+    }
+
+    .message-text {
+      white-space: pre-wrap;
+      padding-right: 65px;
+      min-height: 18px;
+    }
+
+    .message-meta {
+      float: right;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 8px;
+      margin-top: 3px;
+      height: 16px;
+      position: relative;
+      top: 2px;
     }
 
     .message-time {
       font-size: 10px;
-      opacity: 0.7;
-      margin-top: 4px;
-      text-align: right;
+      color: #667781;
+      white-space: nowrap;
     }
+
+    .ticks {
+      font-size: 14px;
+      line-height: 10px;
+      letter-spacing: -3px;
+      color: #667781;
+      padding-right: 2px;
+    }
+
+    .ticks.read {
+      color: #53bdeb;
+    }
+
+    /* =========================
+       EMPTY
+    ========================= */
 
     .empty-chat {
-      text-align: center;
-      color: #888;
+      align-self: center;
       margin-top: 40px;
-      font-size: 14px;
+      background: rgba(255,255,255,.75);
+      color: #667781;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
     }
 
-    /* INPUT */
-    .chat-input-area {
+    /* =========================
+       EMOJI PICKER
+    ========================= */
+
+    .emoji-picker {
+      display: none;
+      position: absolute;
+      bottom: 70px;
+      left: 10px;
+      width: min(360px, calc(100vw - 20px));
+      max-height: 280px;
+      overflow-y: auto;
       background: white;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,.22);
+      z-index: 20;
+    }
+
+    .emoji-picker.show {
+      display: block;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 4px;
+    }
+
+    .emoji-item {
+      border: 0;
+      background: transparent;
+      font-size: 25px;
+      cursor: pointer;
+      border-radius: 8px;
+      padding: 5px;
+    }
+
+    .emoji-item:hover {
+      background: #f0f2f5;
+    }
+
+    /* =========================
+       INPUT AREA
+    ========================= */
+
+    .input-area {
+      position: relative;
+      flex-shrink: 0;
+      background: #f0f2f5;
+      padding: 8px 10px;
       display: flex;
-      gap: 8px;
+      align-items: center;
+      gap: 7px;
       border-top: 1px solid #ddd;
+    }
+
+    .input-button {
+      width: 43px;
+      height: 43px;
+      flex-shrink: 0;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: #54656f;
+      cursor: pointer;
+      font-size: 21px;
+    }
+
+    .input-button:hover {
+      background: #e1e5e8;
     }
 
     #messageInput {
       flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 22px;
-      padding: 12px 16px;
-      font-size: 15px;
+      min-width: 0;
+      height: 43px;
+      border: 0;
       outline: none;
+      border-radius: 22px;
+      background: white;
+      padding: 0 16px;
+      font-size: 15px;
     }
 
     #sendButton {
-      width: 50px;
-      height: 45px;
-      border: none;
-      border-radius: 50%;
-      background: #2563eb;
-      color: white;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    #sendButton:hover {
-      background: #1d4ed8;
-    }
-
-    .feature-button {
       width: 45px;
       height: 45px;
-      border: none;
+      flex-shrink: 0;
+      border: 0;
       border-radius: 50%;
-      background: #eef2ff;
+      background: #128c7e;
+      color: white;
+      font-size: 20px;
       cursor: pointer;
-      font-size: 18px;
     }
 
-    .feature-button:hover {
-      background: #e0e7ff;
+    #sendButton:disabled {
+      opacity: .6;
     }
+
+    /* =========================
+       MOBILE
+    ========================= */
 
     @media (max-width: 600px) {
+
       .chat-header {
         height: 60px;
+        padding: 0 7px;
       }
 
-      .chat-title {
-        font-size: 17px;
+      .profile-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
       }
 
-      .header-buttons button {
-        padding: 7px 8px;
-        font-size: 12px;
+      .profile-name {
+        font-size: 15px;
       }
 
-      .message {
-        max-width: 85%;
+      .online-status {
+        font-size: 11px;
+      }
+
+      .header-actions button {
+        width: 34px;
+        height: 34px;
+        font-size: 15px;
       }
 
       #messages {
-        padding: 10px;
+        padding: 10px 5px;
+      }
+
+      .message {
+        max-width: 86%;
+        font-size: 14px;
+      }
+
+      .input-area {
+        padding: 6px;
+        gap: 3px;
+      }
+
+      .input-button {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+      }
+
+      #messageInput {
+        height: 41px;
+        font-size: 14px;
+      }
+
+      #sendButton {
+        width: 42px;
+        height: 42px;
+      }
+
+      .emoji-picker {
+        bottom: 60px;
+        left: 5px;
+      }
+
+      .emoji-grid {
+        grid-template-columns: repeat(7, 1fr);
       }
     }
   </style>
@@ -246,44 +501,81 @@
 
 <body>
 
-  <!-- LOGIN SCREEN -->
+  <!-- =========================
+       LOGIN
+  ========================== -->
+
   <div id="loginScreen">
+
     <div class="login-box">
-      <h2>🔐 Private Chat</h2>
+
+      <div class="login-logo">
+        💬
+      </div>
+
+      <h2>Private Chat</h2>
 
       <input
         type="email"
         id="emailInput"
         placeholder="Email"
         autocomplete="email"
-      />
+      >
 
       <input
         type="password"
         id="passwordInput"
         placeholder="Password"
         autocomplete="current-password"
-      />
+      >
 
-      <button id="loginButton">Login</button>
+      <button id="loginButton">
+        Login
+      </button>
 
       <div id="loginError"></div>
+
     </div>
+
   </div>
 
 
-  <!-- CHAT SCREEN -->
+  <!-- =========================
+       CHAT
+  ========================== -->
+
   <div id="chatScreen">
+
+    <!-- HEADER -->
 
     <div class="chat-header">
 
-      <div class="chat-title">
-        💬 Private Chat
+      <div class="profile-area">
+
+        <div class="profile-avatar">
+          👤
+        </div>
+
+        <div class="profile-info">
+
+          <div class="profile-name">
+            Private Chat
+          </div>
+
+          <div
+            class="online-status"
+            id="onlineStatus"
+          >
+            Checking status...
+          </div>
+
+        </div>
+
       </div>
 
-      <div class="header-buttons">
 
-        <!-- GIF button - future use -->
+      <div class="header-actions">
+
         <button
           id="gifButton"
           title="GIF"
@@ -291,7 +583,6 @@
           GIF
         </button>
 
-        <!-- Video call skipped for now -->
         <button
           id="videoButton"
           title="Video Call"
@@ -299,47 +590,83 @@
           📹
         </button>
 
-        <!-- Clear complete history -->
         <button
           id="clearChatButton"
-          title="Delete complete chat history"
+          title="Clear complete history"
         >
           🗑️
         </button>
 
-        <button id="logoutButton">
-          Logout
+        <button
+          id="logoutButton"
+          title="Logout"
+        >
+          ⋮
         </button>
 
       </div>
+
     </div>
 
 
     <!-- MESSAGES -->
+
     <div id="messages">
-      <div id="emptyChat" class="empty-chat">
+
+      <div
+        id="emptyChat"
+        class="empty-chat"
+      >
         No messages yet.
       </div>
+
     </div>
 
 
-    <!-- MESSAGE INPUT -->
-    <div class="chat-input-area">
+    <!-- INPUT -->
+
+    <div class="input-area">
+
+      <!-- EMOJI PICKER -->
+
+      <div
+        class="emoji-picker"
+        id="emojiPicker"
+      >
+
+        <div
+          class="emoji-grid"
+          id="emojiGrid"
+        ></div>
+
+      </div>
+
 
       <button
-        class="feature-button"
+        class="input-button"
         id="emojiButton"
         title="Emoji"
       >
         😊
       </button>
 
+
       <input
         type="text"
         id="messageInput"
-        placeholder="Type a message..."
+        placeholder="Type a message"
         autocomplete="off"
-      />
+      >
+
+
+      <button
+        class="input-button"
+        id="gifInputButton"
+        title="GIF"
+      >
+        GIF
+      </button>
+
 
       <button
         id="sendButton"
@@ -353,7 +680,10 @@
   </div>
 
 
-  <!-- FIREBASE -->
+  <!-- =========================
+       FIREBASE
+  ========================== -->
+
   <script type="module">
 
     import {
@@ -372,41 +702,64 @@
       ref,
       push,
       onChildAdded,
-      remove
+      onChildChanged,
+      set,
+      update,
+      remove,
+      onValue
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
     /* =========================
        FIREBASE CONFIG
-    ========================= */
+    ========================== */
 
     const firebaseConfig = {
-      apiKey: "AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
-      authDomain: "private-chat-4c4a8.firebaseapp.com",
-      databaseURL: "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "private-chat-4c4a8",
-      storageBucket: "private-chat-4c4a8.firebasestorage.app",
-      messagingSenderId: "333493856166",
-      appId: "1:333493856166:web:a753d6dfc6db986c8b9167"
+
+      apiKey:
+        "AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
+
+      authDomain:
+        "private-chat-4c4a8.firebaseapp.com",
+
+      databaseURL:
+        "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+      projectId:
+        "private-chat-4c4a8",
+
+      storageBucket:
+        "private-chat-4c4a8.firebasestorage.app",
+
+      messagingSenderId:
+        "333493856166",
+
+      appId:
+        "1:333493856166:web:a753d6dfc6db986c8b9167"
     };
 
 
     /* =========================
-       INITIALIZE FIREBASE
-    ========================= */
+       INIT
+    ========================== */
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+      initializeApp(firebaseConfig);
 
-    const auth = getAuth(app);
+    const auth =
+      getAuth(app);
 
-    const database = getDatabase(app);
+    const database =
+      getDatabase(app);
 
-    const messagesRef = ref(database, "messages");
+
+    const messagesRef =
+      ref(database, "messages");
 
 
     /* =========================
        ELEMENTS
-    ========================= */
+    ========================== */
 
     const loginScreen =
       document.getElementById("loginScreen");
@@ -441,83 +794,131 @@
     const clearChatButton =
       document.getElementById("clearChatButton");
 
+    const emojiButton =
+      document.getElementById("emojiButton");
+
+    const emojiPicker =
+      document.getElementById("emojiPicker");
+
+    const emojiGrid =
+      document.getElementById("emojiGrid");
+
+    const onlineStatus =
+      document.getElementById("onlineStatus");
+
     const gifButton =
       document.getElementById("gifButton");
+
+    const gifInputButton =
+      document.getElementById("gifInputButton");
 
     const videoButton =
       document.getElementById("videoButton");
 
-    const emojiButton =
-      document.getElementById("emojiButton");
-
 
     /* =========================
        VARIABLES
-    ========================= */
+    ========================== */
 
     let currentUser = null;
 
     let stopMessageListener = null;
 
+    let stopChangedListener = null;
+
+    let stopPresenceListener = null;
+
+    let previousDate = "";
+
+
+    /* =========================
+       TWO USER IDS
+    ========================== */
+
+    const USER_1 =
+      "4kQ8bajQmPgYzhej526WHTofvWW2";
+
+    const USER_2 =
+      "4S0l5VRvoPQdQ1qE8XaypIZprD33";
+
+
+    function getOtherUserId() {
+
+      if (!currentUser) return null;
+
+      return currentUser.uid === USER_1
+        ? USER_2
+        : USER_1;
+    }
+
 
     /* =========================
        LOGIN
-    ========================= */
+    ========================== */
 
-    loginButton.addEventListener("click", async () => {
+    loginButton.addEventListener(
+      "click",
+      async () => {
 
-      const email =
-        emailInput.value.trim();
+        const email =
+          emailInput.value.trim();
 
-      const password =
-        passwordInput.value;
+        const password =
+          passwordInput.value;
 
-      loginError.textContent = "";
+        loginError.textContent = "";
 
-      if (!email || !password) {
 
-        loginError.textContent =
-          "Please enter email and password.";
+        if (!email || !password) {
 
-        return;
+          loginError.textContent =
+            "Please enter email and password.";
+
+          return;
+        }
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent =
+          "Logging in...";
+
+
+        try {
+
+          await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+        } catch (error) {
+
+          console.error(error);
+
+          loginError.textContent =
+            "Login failed. Please check email and password.";
+
+        }
+
+
+        loginButton.disabled = false;
+
+        loginButton.textContent =
+          "Login";
+
       }
+    );
 
-      loginButton.disabled = true;
-      loginButton.textContent = "Logging in...";
-
-      try {
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        loginError.textContent =
-          "Login failed. Please check email and password.";
-
-      }
-
-      loginButton.disabled = false;
-      loginButton.textContent = "Login";
-
-    });
-
-
-    /* =========================
-       ENTER KEY LOGIN
-    ========================= */
 
     passwordInput.addEventListener(
       "keydown",
       (event) => {
 
         if (event.key === "Enter") {
+
           loginButton.click();
+
         }
 
       }
@@ -526,94 +927,557 @@
 
     /* =========================
        AUTH STATE
-    ========================= */
+    ========================== */
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(
+      auth,
+      (user) => {
 
-      currentUser = user;
+        currentUser = user;
 
-      if (stopMessageListener) {
 
-        stopMessageListener();
+        if (stopMessageListener) {
 
-        stopMessageListener = null;
+          stopMessageListener();
+
+          stopMessageListener = null;
+
+        }
+
+
+        if (stopChangedListener) {
+
+          stopChangedListener();
+
+          stopChangedListener = null;
+
+        }
+
+
+        if (stopPresenceListener) {
+
+          stopPresenceListener();
+
+          stopPresenceListener = null;
+
+        }
+
+
+        messages.innerHTML = "";
+
+        previousDate = "";
+
+
+        if (user) {
+
+          loginScreen.style.display =
+            "none";
+
+          chatScreen.style.display =
+            "flex";
+
+
+          setOnline();
+
+
+          startMessages();
+
+          startPresenceListener();
+
+          messageInput.focus();
+
+        } else {
+
+          loginScreen.style.display =
+            "flex";
+
+          chatScreen.style.display =
+            "none";
+
+          onlineStatus.textContent =
+            "Offline";
+
+        }
+
       }
-
-      messages.innerHTML = "";
-
-      if (user) {
-
-        loginScreen.style.display = "none";
-
-        chatScreen.style.display = "flex";
-
-        startMessageListener();
-
-        messageInput.focus();
-
-      } else {
-
-        loginScreen.style.display = "flex";
-
-        chatScreen.style.display = "none";
-
-      }
-
-    });
+    );
 
 
     /* =========================
-       REALTIME MESSAGE LISTENER
-    ========================= */
+       PRESENCE
+    ========================== */
 
-    function startMessageListener() {
+    async function setOnline() {
 
-      const empty = document.createElement("div");
+      if (!currentUser) return;
+
+
+      const presenceRef =
+        ref(
+          database,
+          "messages/__presence__/" +
+          currentUser.uid
+        );
+
+
+      try {
+
+        await set(
+          presenceRef,
+          {
+            online: true,
+            lastSeen: Date.now()
+          }
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Presence error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    async function setOffline() {
+
+      if (!currentUser) return;
+
+
+      const presenceRef =
+        ref(
+          database,
+          "messages/__presence__/" +
+          currentUser.uid
+        );
+
+
+      try {
+
+        await set(
+          presenceRef,
+          {
+            online: false,
+            lastSeen: Date.now()
+          }
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Offline status error:",
+          error
+        );
+
+      }
+
+    }
+
+
+    function startPresenceListener() {
+
+      const otherUser =
+        getOtherUserId();
+
+      if (!otherUser) return;
+
+
+      const otherPresenceRef =
+        ref(
+          database,
+          "messages/__presence__/" +
+          otherUser
+        );
+
+
+      stopPresenceListener =
+        onValue(
+          otherPresenceRef,
+          (snapshot) => {
+
+            const data =
+              snapshot.val();
+
+
+            if (
+              data &&
+              data.online === true
+            ) {
+
+              onlineStatus.innerHTML =
+                '<span class="online-dot"></span>Online';
+
+            } else if (
+              data &&
+              data.lastSeen
+            ) {
+
+              onlineStatus.innerHTML =
+                '<span class="offline-dot"></span>Last seen ' +
+                formatTime(data.lastSeen);
+
+            } else {
+
+              onlineStatus.innerHTML =
+                '<span class="offline-dot"></span>Offline';
+
+            }
+
+          }
+        );
+
+    }
+
+
+    window.addEventListener(
+      "beforeunload",
+      () => {
+
+        setOffline();
+
+      }
+    );
+
+
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+
+        if (!currentUser) return;
+
+
+        if (
+          document.visibilityState ===
+          "visible"
+        ) {
+
+          setOnline();
+
+        } else {
+
+          setOffline();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       MESSAGE LISTENER
+    ========================== */
+
+    function startMessages() {
+
+      const empty =
+        document.createElement("div");
 
       empty.id = "emptyChat";
 
-      empty.className = "empty-chat";
+      empty.className =
+        "empty-chat";
 
-      empty.textContent = "No messages yet.";
+      empty.textContent =
+        "No messages yet.";
 
       messages.appendChild(empty);
 
 
       stopMessageListener =
-        onChildAdded(messagesRef, (snapshot) => {
+        onChildAdded(
+          messagesRef,
+          async (snapshot) => {
 
-          const data = snapshot.val();
+            const key =
+              snapshot.key;
 
-          if (!data) return;
+            const data =
+              snapshot.val();
 
-          const emptyChat =
-            document.getElementById("emptyChat");
 
-          if (emptyChat) {
-            emptyChat.remove();
+            /*
+              Presence is stored inside
+              messages only to work with
+              current Firebase rules.
+            */
+
+            if (
+              key === "__presence__"
+            ) {
+
+              return;
+
+            }
+
+
+            if (!data) return;
+
+
+            const emptyChat =
+              document.getElementById(
+                "emptyChat"
+              );
+
+
+            if (emptyChat) {
+
+              emptyChat.remove();
+
+            }
+
+
+            renderMessage(
+              key,
+              data
+            );
+
+
+            /*
+              If this message belongs to
+              the other person, mark it read.
+            */
+
+            if (
+              currentUser &&
+              data.sender !==
+                currentUser.uid &&
+              data.read !== true
+            ) {
+
+              try {
+
+                await update(
+                  ref(
+                    database,
+                    "messages/" + key
+                  ),
+                  {
+                    read: true
+                  }
+                );
+
+              } catch (error) {
+
+                console.error(
+                  "Read receipt error:",
+                  error
+                );
+
+              }
+
+            }
+
           }
+        );
 
-          renderMessage(data);
 
-        });
+      /*
+        Listen for changes so ✓ becomes
+        ✓✓ when message is read.
+      */
+
+      stopChangedListener =
+        onChildChanged(
+          messagesRef,
+          (snapshot) => {
+
+            if (
+              snapshot.key ===
+              "__presence__"
+            ) {
+
+              return;
+
+            }
+
+
+            const data =
+              snapshot.val();
+
+
+            updateRenderedMessage(
+              snapshot.key,
+              data
+            );
+
+          }
+        );
+
+    }
+
+
+    /* =========================
+       DATE
+    ========================== */
+
+    function dateKey(timestamp) {
+
+      const d =
+        new Date(timestamp);
+
+      return (
+        d.getFullYear() +
+        "-" +
+        String(
+          d.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+          d.getDate()
+        ).padStart(2, "0")
+      );
+
+    }
+
+
+    function dateLabel(timestamp) {
+
+      const d =
+        new Date(timestamp);
+
+      const today =
+        new Date();
+
+      const yesterday =
+        new Date();
+
+      yesterday.setDate(
+        yesterday.getDate() - 1
+      );
+
+
+      const key =
+        dateKey(timestamp);
+
+      const todayKey =
+        dateKey(today);
+
+      const yesterdayKey =
+        dateKey(yesterday);
+
+
+      if (key === todayKey) {
+
+        return "Today";
+
+      }
+
+
+      if (
+        key ===
+        yesterdayKey
+      ) {
+
+        return "Yesterday";
+
+      }
+
+
+      return d.toLocaleDateString(
+        [],
+        {
+          day: "numeric",
+          month: "long",
+          year: "numeric"
+        }
+      );
+
+    }
+
+
+    /* =========================
+       TIME
+    ========================== */
+
+    function formatTime(timestamp) {
+
+      return new Date(
+        timestamp
+      ).toLocaleTimeString(
+        [],
+        {
+          hour: "2-digit",
+          minute: "2-digit"
+        }
+      );
 
     }
 
 
     /* =========================
        RENDER MESSAGE
-    ========================= */
+    ========================== */
 
-    function renderMessage(data) {
+    function renderMessage(
+      key,
+      data
+    ) {
 
-      const message =
+      if (!data.text) return;
+
+
+      /*
+        Date separator
+      */
+
+      const currentDate =
+        dateKey(
+          data.timestamp || Date.now()
+        );
+
+
+      if (
+        currentDate !==
+        previousDate
+      ) {
+
+        const separator =
+          document.createElement("div");
+
+        separator.className =
+          "date-separator";
+
+        separator.textContent =
+          dateLabel(
+            data.timestamp ||
+            Date.now()
+          );
+
+        messages.appendChild(
+          separator
+        );
+
+        previousDate =
+          currentDate;
+
+      }
+
+
+      const row =
         document.createElement("div");
 
       const mine =
         currentUser &&
-        data.sender === currentUser.uid;
+        data.sender ===
+          currentUser.uid;
 
-      message.className =
+
+      row.className =
+        "message-row " +
+        (mine ? "mine" : "theirs");
+
+
+      row.dataset.messageId =
+        key;
+
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className =
         "message " +
         (mine ? "mine" : "theirs");
 
@@ -621,35 +1485,85 @@
       const text =
         document.createElement("div");
 
+      text.className =
+        "message-text";
+
       text.textContent =
-        data.text || "";
-
-      message.appendChild(text);
+        data.text;
 
 
-      if (data.timestamp) {
+      bubble.appendChild(
+        text
+      );
 
-        const time =
-          document.createElement("div");
 
-        time.className =
-          "message-time";
+      const meta =
+        document.createElement("div");
 
-        const date =
-          new Date(data.timestamp);
+      meta.className =
+        "message-meta";
 
-        time.textContent =
-          date.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit"
-          });
 
-        message.appendChild(time);
+      const time =
+        document.createElement("span");
+
+      time.className =
+        "message-time";
+
+      time.textContent =
+        formatTime(
+          data.timestamp ||
+          Date.now()
+        );
+
+
+      meta.appendChild(
+        time
+      );
+
+
+      /*
+        Sent / Read
+      */
+
+      if (mine) {
+
+        const ticks =
+          document.createElement("span");
+
+        ticks.className =
+          "ticks " +
+          (data.read
+            ? "read"
+            : "");
+
+        ticks.textContent =
+          data.read
+            ? "✓✓"
+            : "✓";
+
+        ticks.dataset.ticks =
+          "true";
+
+        meta.appendChild(
+          ticks
+        );
 
       }
 
 
-      messages.appendChild(message);
+      bubble.appendChild(
+        meta
+      );
+
+      row.appendChild(
+        bubble
+      );
+
+      messages.appendChild(
+        row
+      );
+
 
       messages.scrollTop =
         messages.scrollHeight;
@@ -658,39 +1572,107 @@
 
 
     /* =========================
+       UPDATE READ RECEIPT
+    ========================== */
+
+    function updateRenderedMessage(
+      key,
+      data
+    ) {
+
+      const row =
+        document.querySelector(
+          '[data-message-id="' +
+          key +
+          '"]'
+        );
+
+
+      if (!row) return;
+
+
+      const ticks =
+        row.querySelector(
+          '[data-ticks="true"]'
+        );
+
+
+      if (!ticks) return;
+
+
+      if (data.read) {
+
+        ticks.textContent =
+          "✓✓";
+
+        ticks.classList.add(
+          "read"
+        );
+
+      } else {
+
+        ticks.textContent =
+          "✓";
+
+        ticks.classList.remove(
+          "read"
+        );
+
+      }
+
+    }
+
+
+    /* =========================
        SEND MESSAGE
-    ========================= */
+    ========================== */
 
     async function sendMessage() {
 
       if (!currentUser) return;
 
+
       const text =
         messageInput.value.trim();
 
+
       if (!text) return;
 
-      sendButton.disabled = true;
+
+      sendButton.disabled =
+        true;
+
 
       try {
 
-        await push(messagesRef, {
+        await push(
+          messagesRef,
+          {
 
-          type: "text",
+            type: "text",
 
-          text: text,
+            text: text,
 
-          sender: currentUser.uid,
+            sender:
+              currentUser.uid,
 
-          email: currentUser.email || "",
+            email:
+              currentUser.email || "",
 
-          timestamp: Date.now()
+            timestamp:
+              Date.now(),
 
-        });
+            read: false
 
-        messageInput.value = "";
+          }
+        );
+
+
+        messageInput.value =
+          "";
 
         messageInput.focus();
+
 
       } catch (error) {
 
@@ -702,7 +1684,9 @@
 
       }
 
-      sendButton.disabled = false;
+
+      sendButton.disabled =
+        false;
 
     }
 
@@ -712,10 +1696,6 @@
       sendMessage
     );
 
-
-    /* =========================
-       ENTER TO SEND
-    ========================= */
 
     messageInput.addEventListener(
       "keydown",
@@ -738,11 +1718,17 @@
 
     /* =========================
        LOGOUT
-    ========================= */
+    ========================== */
 
     logoutButton.addEventListener(
       "click",
       async () => {
+
+        if (!currentUser) return;
+
+
+        await setOffline();
+
 
         try {
 
@@ -759,9 +1745,8 @@
 
 
     /* =========================
-       CLEAR COMPLETE CHAT
-       Deletes history for BOTH users
-    ========================= */
+       CLEAR COMPLETE HISTORY
+    ========================== */
 
     clearChatButton.addEventListener(
       "click",
@@ -770,17 +1755,19 @@
         if (!currentUser) return;
 
 
-        const confirmed = confirm(
-          "⚠️ Clear complete chat?\n\n" +
-          "All messages will be permanently deleted for both users.\n\n" +
-          "This action cannot be undone."
-        );
+        const confirmed =
+          confirm(
+            "⚠️ Clear complete chat?\n\n" +
+            "All messages will be permanently deleted for both users.\n\n" +
+            "This action cannot be undone."
+          );
 
 
         if (!confirmed) return;
 
 
-        clearChatButton.disabled = true;
+        clearChatButton.disabled =
+          true;
 
         clearChatButton.textContent =
           "Deleting...";
@@ -788,24 +1775,38 @@
 
         try {
 
-          await remove(messagesRef);
+          await remove(
+            messagesRef
+          );
 
 
-          messages.innerHTML = "";
+          messages.innerHTML =
+            "";
 
 
           const empty =
             document.createElement("div");
 
-          empty.id = "emptyChat";
+          empty.id =
+            "emptyChat";
 
-          empty.className = "empty-chat";
+          empty.className =
+            "empty-chat";
 
           empty.textContent =
             "No messages yet.";
 
 
-          messages.appendChild(empty);
+          messages.appendChild(
+            empty
+          );
+
+
+          previousDate =
+            "";
+
+
+          await setOnline();
 
 
           alert(
@@ -824,7 +1825,8 @@
         }
 
 
-        clearChatButton.disabled = false;
+        clearChatButton.disabled =
+          false;
 
         clearChatButton.textContent =
           "🗑️";
@@ -834,16 +1836,126 @@
 
 
     /* =========================
-       GIF BUTTON
-       Provider/search later
-    ========================= */
+       EMOJI
+    ========================== */
+
+    const emojis = [
+
+      "😀","😃","😄","😁","😆","😅","😂","🤣",
+      "😊","😇","🙂","🙃","😉","😌","😍","🥰",
+      "😘","😗","😙","😚","😋","😛","😝","😜",
+      "🤪","🤨","🧐","🤓","😎","🥳","🤩","🥺",
+      "😢","😭","😤","😡","🤬","😱","😨","😳",
+      "🤗","🤔","🫡","🤭","🤫","😐","😑","😶",
+      "🙄","😏","😴","🤤","😷","🤒","🤕","🤮",
+      "❤️","🧡","💛","💚","💙","💜","🖤","🤍",
+      "💔","💕","💖","💗","💓","💞","💘","💝",
+      "👍","👎","👌","✌️","🤞","🙏","👏","🙌",
+      "💪","🤝","👋","🤌","👀","🔥","✨","⭐",
+      "🎉","🎊","❤️‍🔥","💯","✅","❌","💯","😄",
+      "🍕","🍔","🍟","🌭","🍎","🍌","🍉","🍓",
+      "☕","🍵","🥤","🍺","🎂","🍫","🍿","🍪"
+
+    ];
+
+
+    emojis.forEach(
+      (emoji) => {
+
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.className =
+          "emoji-item";
+
+        button.type =
+          "button";
+
+        button.textContent =
+          emoji;
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            messageInput.value +=
+              emoji;
+
+            messageInput.focus();
+
+          }
+        );
+
+
+        emojiGrid.appendChild(
+          button
+        );
+
+      }
+    );
+
+
+    emojiButton.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+        emojiPicker.classList.toggle(
+          "show"
+        );
+
+      }
+    );
+
+
+    document.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          !emojiPicker.contains(
+            event.target
+          ) &&
+          event.target !==
+            emojiButton
+        ) {
+
+          emojiPicker.classList.remove(
+            "show"
+          );
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       GIF
+    ========================== */
 
     gifButton.addEventListener(
       "click",
       () => {
 
         alert(
-          "GIF feature baad mein add karenge."
+          "GIF search feature baad mein add karenge."
+        );
+
+      }
+    );
+
+
+    gifInputButton.addEventListener(
+      "click",
+      () => {
+
+        alert(
+          "GIF search feature baad mein add karenge."
         );
 
       }
@@ -851,9 +1963,8 @@
 
 
     /* =========================
-       VIDEO BUTTON
-       Skipped for now
-    ========================= */
+       VIDEO
+    ========================== */
 
     videoButton.addEventListener(
       "click",
@@ -862,22 +1973,6 @@
         alert(
           "Video call feature abhi skip kiya hai."
         );
-
-      }
-    );
-
-
-    /* =========================
-       EMOJI BUTTON
-    ========================= */
-
-    emojiButton.addEventListener(
-      "click",
-      () => {
-
-        messageInput.value += " 😊";
-
-        messageInput.focus();
 
       }
     );
