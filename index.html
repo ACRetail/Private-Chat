@@ -1,656 +1,2716 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#075e54">
-<title>Private Chat</title>
-<style>
-*{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
-button,input{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Private Chat</title>
 
-/* LOGIN */
-#loginScreen{
-  position:fixed;inset:0;display:flex;align-items:center;
-  justify-content:center;padding:20px;
-  background:linear-gradient(145deg,#075e54,#111b21)
-}
-.loginCard{
-  width:100%;max-width:380px;background:#fff;border-radius:18px;
-  padding:30px 23px;text-align:center;box-shadow:0 15px 50px #0005
-}
-.loginLogo{font-size:45px}
-.loginCard h1{color:#075e54;margin:12px 0 5px}
-.loginCard p{color:#667781;font-size:14px;margin-bottom:25px}
-.loginCard input{
-  width:100%;padding:14px;margin-bottom:12px;border:1px solid #ddd;
-  border-radius:9px;outline:none
-}
-.loginCard input:focus{border-color:#00a884}
-.loginCard button{
-  width:100%;border:0;background:#00a884;color:white;
-  padding:14px;border-radius:9px;font-weight:bold
-}
-#error{color:#d32f2f;font-size:13px;margin-top:12px}
+  <style>
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
 
-/* APP */
-#chatScreen{
-  position:fixed;top:0;left:0;width:100%;
-  height:100dvh;display:flex;justify-content:center;
-  background:#111b21;overflow:hidden
-}
-.chat{
-  width:100%;max-width:950px;height:100%;
-  display:flex;flex-direction:column;overflow:hidden;
-  background:#efeae2
-}
+    html,body{
+      margin:0;
+      padding:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:Arial,Helvetica,sans-serif;
+      background:#efeae2;
+    }
 
-/* FIXED HEADER */
-.header{
-  flex:0 0 62px;height:62px;background:#075e54;
-  display:flex;align-items:center;padding:0 10px;
-  color:white;gap:10px;z-index:5
-}
-.avatar{
-  width:41px;height:41px;border-radius:50%;
-  background:#dfe9e5;color:#075e54;display:flex;
-  align-items:center;justify-content:center;font-size:23px;
-  flex-shrink:0
-}
-.contact{flex:1;min-width:0}
-.contactName{
-  font-weight:bold;font-size:17px;white-space:nowrap;
-  overflow:hidden;text-overflow:ellipsis
-}
-#status{font-size:12px;opacity:.85;margin-top:4px}
-.headerButton{
-  border:0;background:transparent;color:white;
-  font-size:21px;padding:6px;flex-shrink:0
-}
+    body{
+      height:100dvh;
+    }
 
-/* CHAT BACKGROUND */
-.messages{
-  flex:1;min-height:0;overflow-y:auto;
-  overscroll-behavior:contain;
-  padding:15px 12px;
-  background-color:#efeae2;
-  background-image:
-    radial-gradient(#b8b0a536 1px,transparent 1px),
-    radial-gradient(#b8b0a526 1px,transparent 1px);
-  background-size:38px 38px,55px 55px;
-  background-position:0 0,18px 23px;
-  scrollbar-width:thin
-}
-.date{
-  width:max-content;max-width:90%;
-  margin:10px auto 17px;padding:7px 12px;
-  background:#fffdf4;color:#54656f;
-  font-size:12px;border-radius:8px;
-  box-shadow:0 1px 2px #0002
-}
-.msgRow{display:flex;margin:4px 0}
-.msgRow.mine{justify-content:flex-end}
-.msgRow.theirs{justify-content:flex-start}
-.bubble{
-  max-width:82%;min-width:75px;padding:7px 8px 5px;
-  border-radius:9px;box-shadow:0 1px 1px #0002;
-  font-size:14.5px;line-height:1.42;overflow-wrap:anywhere
-}
-.mine .bubble{background:#d9fdd3;border-top-right-radius:2px}
-.theirs .bubble{background:white;border-top-left-radius:2px}
-.msgText{white-space:pre-wrap}
-.meta{
-  display:flex;justify-content:flex-end;align-items:center;
-  gap:4px;font-size:10px;color:#667781;
-  margin-top:3px;min-height:12px
-}
-.ticks{font-size:13px;letter-spacing:-3px;padding-right:3px}
-.ticks.read{color:#53bdeb}
-.empty{text-align:center;color:#667781;margin:30vh 0;font-size:13px}
+    button,input{
+      font:inherit;
+    }
 
-/* TYPING */
-#typingBubble{
-  display:none;width:62px;background:white;
-  padding:13px;margin:7px 0;border-radius:10px;
-  box-shadow:0 1px 2px #0002
-}
-.dots{display:flex;gap:4px}
-.dots span{
-  width:7px;height:7px;border-radius:50%;background:#8696a0;
-  animation:jump 1s infinite
-}
-.dots span:nth-child(2){animation-delay:.15s}
-.dots span:nth-child(3){animation-delay:.3s}
-@keyframes jump{
-  0%,60%,100%{transform:translateY(0)}
-  30%{transform:translateY(-5px)}
-}
+    .screen{
+      width:100%;
+      height:100dvh;
+    }
 
-/* INPUT STAYS ABOVE KEYBOARD */
-.composer{
-  flex:0 0 auto;display:flex;align-items:flex-end;
-  gap:7px;padding:7px 8px;
-  padding-bottom:max(7px,env(safe-area-inset-bottom));
-  background:#f0f2f5
-}
-.inputBox{
-  flex:1;min-width:0;display:flex;align-items:center;
-  background:white;border-radius:25px;padding:3px 7px
-}
-.inputIcon{
-  background:none;border:0;color:#8696a0;
-  font-size:23px;padding:8px
-}
-#messageInput{
-  flex:1;min-width:0;border:0;outline:0;
-  padding:11px 4px;font-size:15px;background:transparent
-}
-.send{
-  border:0;background:#00a884;color:white;
-  width:45px;height:45px;border-radius:50%;
-  font-size:21px;flex-shrink:0
-}
-#emojiPanel{
-  display:none;background:#fff;padding:12px;
-  border-top:1px solid #ddd;max-height:175px;overflow-y:auto
-}
-.emojiGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
-.emojiGrid button{background:none;border:0;font-size:24px}
-@media(min-width:951px){
-  .chat{box-shadow:0 0 35px #0005}
-}
-@media(max-width:360px){
-  .header{gap:6px;padding:0 7px}
-  .headerButton{font-size:19px;padding:4px}
-  .bubble{max-width:88%}
-}
-</style>
+    /* LOGIN */
+
+    #loginScreen{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:#075e54;
+      padding:20px;
+    }
+
+    .login-box{
+      width:min(390px,100%);
+      background:#fff;
+      border-radius:18px;
+      padding:28px;
+      box-shadow:0 15px 40px rgba(0,0,0,.2);
+    }
+
+    .login-box h1{
+      margin:0 0 8px;
+      color:#075e54;
+      text-align:center;
+    }
+
+    .login-box p{
+      text-align:center;
+      color:#777;
+      margin:0 0 22px;
+    }
+
+    .login-box input{
+      width:100%;
+      padding:14px;
+      border:1px solid #ddd;
+      border-radius:10px;
+      margin-bottom:12px;
+      outline:none;
+    }
+
+    .login-box input:focus{
+      border-color:#25d366;
+    }
+
+    #loginBtn{
+      width:100%;
+      padding:14px;
+      border:0;
+      border-radius:10px;
+      background:#128c7e;
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+    }
+
+    #loginError{
+      color:#d32f2f;
+      text-align:center;
+      margin-top:12px;
+      font-size:14px;
+    }
+
+    /* CHAT */
+
+    #chatScreen{
+      display:none;
+      flex-direction:column;
+      background:#efeae2;
+      position:relative;
+    }
+
+    .chat-header{
+      flex:0 0 62px;
+      height:62px;
+      background:#075e54;
+      color:white;
+      display:flex;
+      align-items:center;
+      padding:7px 12px;
+      z-index:20;
+      box-shadow:0 1px 4px rgba(0,0,0,.18);
+    }
+
+    .avatar{
+      width:44px;
+      height:44px;
+      border-radius:50%;
+      background:#25d366;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:bold;
+      margin-right:10px;
+      flex-shrink:0;
+    }
+
+    .header-info{
+      min-width:0;
+      flex:1;
+    }
+
+    .header-name{
+      font-size:16px;
+      font-weight:bold;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .header-status{
+      font-size:12px;
+      margin-top:3px;
+      opacity:.85;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .header-actions{
+      display:flex;
+      align-items:center;
+      gap:3px;
+    }
+
+    .header-actions button{
+      border:0;
+      background:transparent;
+      color:white;
+      width:38px;
+      height:38px;
+      border-radius:50%;
+      cursor:pointer;
+      font-size:20px;
+    }
+
+    .header-actions button:active{
+      background:rgba(255,255,255,.15);
+    }
+
+    /* MESSAGES */
+
+    .messages{
+      flex:1 1 auto;
+      min-height:0;
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding:12px 8px 10px;
+      scroll-behavior:auto;
+
+      background-color:#efeae2;
+      background-image:
+        radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);
+      background-size:18px 18px;
+    }
+
+    .messages::-webkit-scrollbar{
+      width:5px;
+    }
+
+    .messages::-webkit-scrollbar-thumb{
+      background:rgba(0,0,0,.18);
+      border-radius:10px;
+    }
+
+    .date-separator{
+      text-align:center;
+      margin:9px 0;
+    }
+
+    .date-separator span{
+      display:inline-block;
+      background:#d9fdd3;
+      color:#54656f;
+      font-size:11px;
+      padding:5px 10px;
+      border-radius:8px;
+      box-shadow:0 1px 1px rgba(0,0,0,.08);
+    }
+
+    .message-row{
+      display:flex;
+      margin:2px 0;
+      width:100%;
+    }
+
+    .message-row.me{
+      justify-content:flex-end;
+    }
+
+    .message-row.other{
+      justify-content:flex-start;
+    }
+
+    .bubble{
+      position:relative;
+      max-width:min(78%,520px);
+      padding:7px 9px 5px;
+      border-radius:8px;
+      word-wrap:break-word;
+      overflow-wrap:anywhere;
+      box-shadow:0 1px 1px rgba(0,0,0,.12);
+      font-size:15px;
+      line-height:1.35;
+    }
+
+    .message-row.me .bubble{
+      background:#d9fdd3;
+      border-top-right-radius:3px;
+    }
+
+    .message-row.other .bubble{
+      background:#fff;
+      border-top-left-radius:3px;
+    }
+
+    .message-text{
+      white-space:pre-wrap;
+    }
+
+    .message-time{
+      float:right;
+      margin-left:9px;
+      margin-top:4px;
+      font-size:10px;
+      color:#667781;
+      display:flex;
+      align-items:center;
+      gap:2px;
+    }
+
+    .ticks{
+      color:#53bdeb;
+      font-size:14px;
+      line-height:10px;
+    }
+
+    .ticks.sent{
+      color:#667781;
+    }
+
+    /* PHOTO MESSAGE */
+
+    .chat-photo{
+      display:block;
+      max-width:230px;
+      max-height:300px;
+      border-radius:7px;
+      object-fit:cover;
+      cursor:pointer;
+      margin-bottom:3px;
+    }
+
+    .photo-label{
+      font-size:12px;
+      color:#667781;
+      margin-top:3px;
+    }
+
+    /* TYPING */
+
+    .typing-area{
+      flex:0 0 auto;
+      min-height:0;
+      padding:0 12px 4px;
+      background:transparent;
+    }
+
+    .typing-bubble{
+      display:none;
+      width:max-content;
+      max-width:80%;
+      background:white;
+      border-radius:10px;
+      padding:6px 10px;
+      color:#667781;
+      font-size:12px;
+      box-shadow:0 1px 2px rgba(0,0,0,.12);
+    }
+
+    .typing-bubble.show{
+      display:block;
+    }
+
+    .typing-dots span{
+      display:inline-block;
+      width:5px;
+      height:5px;
+      background:#667781;
+      border-radius:50%;
+      margin-left:2px;
+      animation:typing 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2){
+      animation-delay:.15s;
+    }
+
+    .typing-dots span:nth-child(3){
+      animation-delay:.3s;
+    }
+
+    @keyframes typing{
+      0%,60%,100%{transform:translateY(0)}
+      30%{transform:translateY(-3px)}
+    }
+
+    /* COMPOSER */
+
+    .composer{
+      flex:0 0 auto;
+      min-height:58px;
+      background:#f0f2f5;
+      padding:7px 8px;
+      padding-bottom:max(7px,env(safe-area-inset-bottom));
+      display:flex;
+      align-items:flex-end;
+      gap:6px;
+      z-index:20;
+    }
+
+    .composer button{
+      flex-shrink:0;
+      width:42px;
+      height:42px;
+      border:0;
+      border-radius:50%;
+      background:transparent;
+      cursor:pointer;
+      font-size:22px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .composer button:active{
+      background:#ddd;
+    }
+
+    #messageInput{
+      flex:1;
+      min-width:0;
+      max-height:120px;
+      min-height:42px;
+      resize:none;
+      border:0;
+      outline:none;
+      border-radius:21px;
+      padding:11px 15px;
+      background:#fff;
+      font-size:15px;
+      line-height:20px;
+      overflow-y:auto;
+    }
+
+    #sendBtn{
+      background:#128c7e;
+      color:white;
+      font-size:19px;
+    }
+
+    #sendBtn:active{
+      background:#075e54;
+    }
+
+    /* EMOJI */
+
+    .emoji-picker{
+      display:none;
+      position:absolute;
+      bottom:65px;
+      left:8px;
+      width:min(330px,calc(100% - 16px));
+      max-height:250px;
+      overflow-y:auto;
+      background:white;
+      border-radius:12px;
+      box-shadow:0 5px 25px rgba(0,0,0,.22);
+      padding:10px;
+      z-index:50;
+    }
+
+    .emoji-picker.show{
+      display:grid;
+      grid-template-columns:repeat(8,1fr);
+      gap:4px;
+    }
+
+    .emoji-btn{
+      border:0;
+      background:transparent;
+      font-size:23px;
+      padding:5px;
+      cursor:pointer;
+      border-radius:7px;
+    }
+
+    .emoji-btn:hover{
+      background:#eee;
+    }
+
+    /* PHOTO VIEWER */
+
+    #photoViewer{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      background:rgba(0,0,0,.96);
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+    }
+
+    #photoViewer.show{
+      display:flex;
+    }
+
+    #viewerPhoto{
+      max-width:96vw;
+      max-height:84vh;
+      object-fit:contain;
+      border-radius:5px;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    .viewer-top{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:60px;
+      display:flex;
+      align-items:center;
+      padding:8px 12px;
+      color:white;
+      z-index:2;
+    }
+
+    #closePhoto{
+      width:44px;
+      height:44px;
+      border:0;
+      background:rgba(0,0,0,.35);
+      color:white;
+      border-radius:50%;
+      font-size:28px;
+      cursor:pointer;
+    }
+
+    .viewer-note{
+      position:absolute;
+      bottom:25px;
+      color:rgba(255,255,255,.7);
+      font-size:12px;
+      text-align:center;
+      padding:0 20px;
+    }
+
+    /* PHOTO SEND STATUS */
+
+    .photo-sending{
+      display:none;
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      background:rgba(0,0,0,.8);
+      color:white;
+      padding:14px 20px;
+      border-radius:12px;
+      z-index:500;
+      font-size:14px;
+    }
+
+    .photo-sending.show{
+      display:block;
+    }
+
+    /* MOBILE */
+
+    @media(max-width:600px){
+      .bubble{
+        max-width:85%;
+      }
+
+      .chat-photo{
+        max-width:220px;
+        max-height:280px;
+      }
+
+      .header-actions button{
+        width:34px;
+      }
+
+      .avatar{
+        width:40px;
+        height:40px;
+      }
+
+      .composer button{
+        width:40px;
+        height:40px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<section id="loginScreen">
-  <div class="loginCard">
-    <div class="loginLogo">💚</div>
+<!-- LOGIN -->
+
+<div id="loginScreen" class="screen">
+  <div class="login-box">
     <h1>Private Chat</h1>
-    <p>Just you and your special person ❤️</p>
-    <input id="email" type="email" placeholder="Email" autocomplete="email">
-    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    <p>Secure chat for two people</p>
+
+    <input
+      type="email"
+      id="emailInput"
+      placeholder="Email"
+      autocomplete="username"
+    >
+
+    <input
+      type="password"
+      id="passwordInput"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
     <button id="loginBtn">Login</button>
-    <div id="error"></div>
+
+    <div id="loginError"></div>
   </div>
-</section>
+</div>
 
-<section id="chatScreen" class="hidden">
-  <div class="chat" id="chat">
-    <header class="header">
-      <div class="avatar">❤️</div>
-      <div class="contact">
-        <div class="contactName">Private Chat</div>
-        <div id="status">Connecting...</div>
+
+<!-- CHAT -->
+
+<div id="chatScreen" class="screen">
+
+  <div class="chat-header">
+
+    <div class="avatar" id="avatar">P</div>
+
+    <div class="header-info">
+      <div class="header-name">Private Chat</div>
+      <div class="header-status" id="headerStatus">
+        Connecting...
       </div>
-      <button class="headerButton" id="clearBtn" title="Clear chat">⋮</button>
-      <button class="headerButton" id="logoutBtn" title="Logout">↪</button>
-    </header>
-
-    <main class="messages" id="messages">
-      <div id="typingBubble">
-        <div class="dots"><span></span><span></span><span></span></div>
-      </div>
-    </main>
-
-    <div id="emojiPanel">
-      <div class="emojiGrid" id="emojiGrid"></div>
     </div>
 
-    <footer class="composer">
-      <div class="inputBox">
-        <button class="inputIcon" id="emojiBtn">☺</button>
-        <input id="messageInput" type="text"
-          placeholder="Message" autocomplete="off">
-      </div>
-      <button class="send" id="sendBtn">➤</button>
-    </footer>
+    <div class="header-actions">
+      <button id="clearBtn" title="Clear chat">🗑️</button>
+      <button id="logoutBtn" title="Logout">⋮</button>
+    </div>
+
   </div>
-</section>
+
+
+  <div id="messages" class="messages"></div>
+
+
+  <div class="typing-area">
+    <div id="typingBubble" class="typing-bubble">
+      typing
+      <span class="typing-dots">
+        <span></span><span></span><span></span>
+      </span>
+    </div>
+  </div>
+
+
+  <div class="composer">
+
+    <button id="emojiBtn" title="Emoji">😊</button>
+
+    <button id="photoBtn" title="Send photo">📷</button>
+
+    <input
+      type="file"
+      id="photoInput"
+      accept="image/*"
+      capture="environment"
+      hidden
+    >
+
+    <textarea
+      id="messageInput"
+      placeholder="Message"
+      rows="1"
+    ></textarea>
+
+    <button id="sendBtn" title="Send">➤</button>
+
+  </div>
+
+
+  <div id="emojiPicker" class="emoji-picker"></div>
+
+</div>
+
+
+<!-- PHOTO VIEWER -->
+
+<div id="photoViewer">
+
+  <div class="viewer-top">
+    <button id="closePhoto">‹</button>
+  </div>
+
+  <img id="viewerPhoto" alt="Temporary photo">
+
+  <div class="viewer-note">
+    Temporary photo • Close karne par viewer se remove ho jayegi
+  </div>
+
+</div>
+
+
+<div id="photoSending" class="photo-sending">
+  Sending photo...
+</div>
+
 
 <script type="module">
-import {initializeApp}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-  getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    initializeApp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-import {
-  getDatabase,ref,push,onChildAdded,onChildChanged,
-  onChildRemoved,onValue,set,update,remove,onDisconnect
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-const firebaseConfig={
-  apiKey:"AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
-  authDomain:"private-chat-4c4a8.firebaseapp.com",
-  databaseURL:"https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:"private-chat-4c4a8",
-  storageBucket:"private-chat-4c4a8.firebasestorage.app",
-  messagingSenderId:"333493856166",
-  appId:"1:333493856166:web:a753d6dfc6db986c8b9167"
-};
+  import {
+    getDatabase,
+    ref,
+    push,
+    set,
+    update,
+    remove,
+    onChildAdded,
+    onValue,
+    onDisconnect,
+    get
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getDatabase(app);
 
-const USER1="4kQ8bajQmPgYzhej526WHTofvWW2";
-const USER2="4S0l5VRvoPQdQ1qE8XaypIZprD33";
+  /* =========================================================
+     FIREBASE
+  ========================================================= */
 
-const $=id=>document.getElementById(id);
-const messages=$("messages");
-const typingBubble=$("typingBubble");
-const input=$("messageInput");
-
-let user=null;
-let unsub=[];
-let typingTimer=null;
-let otherPresence=null;
-let otherTyping=false;
-let dates=new Set();
-let messageCount=0;
-let initialLoading=false;
-
-const otherUid=()=>user?.uid===USER1?USER2:USER1;
-
-function dateKey(ts){
-  const d=new Date(ts);
-  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-}
-
-function dateLabel(ts){
-  const now=new Date();
-  const yesterday=new Date();
-  yesterday.setDate(now.getDate()-1);
-  if(dateKey(ts)===dateKey(now))return "Today";
-  if(dateKey(ts)===dateKey(yesterday))return "Yesterday";
-  return new Date(ts).toLocaleDateString("en-IN",{
-    day:"numeric",month:"long",year:"numeric"
-  });
-}
-
-function time(ts){
-  return new Date(ts).toLocaleTimeString("en-IN",{
-    hour:"numeric",minute:"2-digit"
-  });
-}
-
-function nearBottom(){
-  return messages.scrollHeight-messages.scrollTop-messages.clientHeight<130;
-}
-
-function scrollBottom(){
-  messages.scrollTop=messages.scrollHeight;
-}
-
-function refreshStatus(){
-  if(otherTyping){
-    $("status").textContent="typing...";
-    return;
-  }
-  if(otherPresence?.online){
-    $("status").textContent="online";
-  }else if(otherPresence?.lastSeen){
-    $("status").textContent=
-      "last seen "+dateLabel(otherPresence.lastSeen).toLowerCase()+
-      " at "+time(otherPresence.lastSeen);
-  }else{
-    $("status").textContent="offline";
-  }
-}
-
-function resetMessages(){
-  messages.replaceChildren(typingBubble);
-  typingBubble.style.display="none";
-  dates.clear();
-  messageCount=0;
-}
-
-function addDate(ts){
-  const key=dateKey(ts);
-  if(dates.has(key))return;
-  dates.add(key);
-  const el=document.createElement("div");
-  el.className="date";
-  el.textContent=dateLabel(ts);
-  messages.insertBefore(el,typingBubble);
-}
-
-function renderMessage(key,data){
-  if(!user||!data||typeof data.text!=="string")return;
-  if(document.getElementById("msg-"+key))return;
-
-  const stick=initialLoading||nearBottom();
-  const empty=messages.querySelector(".empty");
-  if(empty)empty.remove();
-
-  addDate(data.timestamp||Date.now());
-
-  const mine=data.sender===user.uid;
-  const row=document.createElement("div");
-  row.className="msgRow "+(mine?"mine":"theirs");
-  row.id="msg-"+key;
-
-  const bubble=document.createElement("div");
-  bubble.className="bubble";
-
-  const text=document.createElement("div");
-  text.className="msgText";
-  text.textContent=data.text;
-
-  const meta=document.createElement("div");
-  meta.className="meta";
-
-  const clock=document.createElement("span");
-  clock.textContent=time(data.timestamp||Date.now());
-  meta.appendChild(clock);
-
-  if(mine){
-    const ticks=document.createElement("span");
-    ticks.className="ticks"+(data.read?" read":"");
-    ticks.textContent=data.read?"✓✓":"✓";
-    meta.appendChild(ticks);
-  }
-
-  bubble.append(text,meta);
-  row.appendChild(bubble);
-  messages.insertBefore(row,typingBubble);
-  messageCount++;
-
-  if(stick)requestAnimationFrame(scrollBottom);
-
-  if(!mine&&!data.read){
-    update(ref(db,"messages/"+key),{read:true})
-      .catch(console.error);
-  }
-}
-
-function updateTicks(key,data){
-  const row=document.getElementById("msg-"+key);
-  const ticks=row?.querySelector(".ticks");
-  if(ticks){
-    ticks.textContent=data.read?"✓✓":"✓";
-    ticks.classList.toggle("read",!!data.read);
-  }
-}
-
-function showEmpty(){
-  if(messageCount>0||messages.querySelector(".empty"))return;
-  const empty=document.createElement("div");
-  empty.className="empty";
-  empty.textContent="🔒 Messages are private to your chat";
-  messages.insertBefore(empty,typingBubble);
-}
-
-function listenMessages(){
-  initialLoading=true;
-  const msgRef=ref(db,"messages");
-
-  unsub.push(onChildAdded(msgRef,s=>{
-    if(s.key?.startsWith("__"))return;
-    renderMessage(s.key,s.val());
-  }));
-
-  unsub.push(onChildChanged(msgRef,s=>{
-    if(s.key?.startsWith("__"))return;
-    updateTicks(s.key,s.val());
-  }));
-
-  unsub.push(onChildRemoved(msgRef,s=>{
-    if(s.key?.startsWith("__"))return;
-    document.getElementById("msg-"+s.key)?.remove();
-    messageCount=Math.max(0,messageCount-1);
-    if(messageCount===0){
-      messages.querySelectorAll(".date").forEach(e=>e.remove());
-      dates.clear();
-      showEmpty();
-    }
-  }));
-
-  unsub.push(onValue(msgRef,()=>{
-    if(initialLoading){
-      initialLoading=false;
-      showEmpty();
-      requestAnimationFrame(scrollBottom);
-    }
-  },{onlyOnce:true}));
-}
-
-async function setTyping(value){
-  if(!user)return;
-  try{
-    await set(ref(db,"messages/__typing__/"+user.uid),{
-      typing:value,timestamp:Date.now()
-    });
-  }catch(e){console.error(e)}
-}
-
-function listenPresence(){
-  const myRef=ref(db,"messages/__presence__/"+user.uid);
-  const theirRef=ref(db,"messages/__presence__/"+otherUid());
-  const myTyping=ref(db,"messages/__typing__/"+user.uid);
-  const theirTyping=ref(db,"messages/__typing__/"+otherUid());
-
-  // Re-register presence whenever Firebase reconnects.
-  unsub.push(onValue(ref(db,".info/connected"),async s=>{
-    if(!s.val()||!user)return;
-    try{
-      await onDisconnect(myRef).set({
-        online:false,lastSeen:Date.now()
-      });
-      await onDisconnect(myTyping).set({
-        typing:false,timestamp:Date.now()
-      });
-      await set(myRef,{online:true,lastSeen:Date.now()});
-    }catch(e){console.error(e)}
-  }));
-
-  unsub.push(onValue(theirRef,s=>{
-    otherPresence=s.val();
-    refreshStatus();
-  }));
-
-  unsub.push(onValue(theirTyping,s=>{
-    const d=s.val();
-    otherTyping=!!(d?.typing&&Date.now()-d.timestamp<10000);
-    typingBubble.style.display=otherTyping?"block":"none";
-    refreshStatus();
-    if(otherTyping&&nearBottom())scrollBottom();
-  }));
-}
-
-async function send(){
-  if(!user)return;
-  const text=input.value.trim();
-  if(!text)return;
-
-  input.value="";
-  clearTimeout(typingTimer);
-  setTyping(false);
-
-  try{
-    await push(ref(db,"messages"),{
-      type:"text",text,sender:user.uid,
-      email:user.email||"",
-      timestamp:Date.now(),read:false
-    });
-    requestAnimationFrame(scrollBottom);
-  }catch(e){
-    input.value=text;
-    alert("Message send nahi hua. Dobara try karo.");
-    console.error(e);
-  }
-}
-
-$("sendBtn").onclick=send;
-input.addEventListener("keydown",e=>{
-  if(e.key==="Enter"){
-    e.preventDefault();
-    send();
-  }
-});
-
-input.addEventListener("input",()=>{
-  clearTimeout(typingTimer);
-  if(!user)return;
-  if(!input.value.trim()){
-    setTyping(false);
-    return;
-  }
-  setTyping(true);
-  typingTimer=setTimeout(()=>setTyping(false),1500);
-});
-
-$("loginBtn").onclick=async()=>{
-  const email=$("email").value.trim();
-  const password=$("password").value;
-  if(!email||!password){
-    $("error").textContent="Enter email and password.";
-    return;
-  }
-  $("loginBtn").disabled=true;
-  $("error").textContent="";
-  try{
-    await signInWithEmailAndPassword(auth,email,password);
-  }catch(e){
-    console.error(e);
-    $("error").textContent="Login failed. Check email and password.";
-  }finally{
-    $("loginBtn").disabled=false;
-  }
-};
-
-$("password").addEventListener("keydown",e=>{
-  if(e.key==="Enter")$("loginBtn").click();
-});
-
-$("logoutBtn").onclick=async()=>{
-  if(!confirm("Logout?"))return;
-  try{
-    await setTyping(false);
-    if(user){
-      await set(ref(db,"messages/__presence__/"+user.uid),{
-        online:false,lastSeen:Date.now()
-      });
-    }
-    await signOut(auth);
-  }catch(e){alert("Logout failed.");console.error(e)}
-};
-
-$("clearBtn").onclick=async()=>{
-  if(!user)return;
-  if(!confirm("Delete complete chat history for BOTH users? This cannot be undone."))return;
-  try{
-    // Preserve the special presence and typing nodes.
-    const {get}=await import(
-      "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"
-    );
-    const snapshot=await get(ref(db,"messages"));
-    const changes={};
-    snapshot.forEach(child=>{
-      if(!child.key.startsWith("__"))changes[child.key]=null;
-    });
-    if(Object.keys(changes).length){
-      await update(ref(db,"messages"),changes);
-    }
-    resetMessages();
-    showEmpty();
-    alert("Chat history deleted for both users.");
-  }catch(e){
-    console.error(e);
-    alert("Could not clear chat.");
-  }
-};
-
-/* EMOJI */
-const emojis=[
-"😀","😂","🤣","😊","😍","🥰","😘","😉",
-"😏","😌","😜","🤭","🫣","😈","🔥","❤️",
-"💕","💗","💋","🥺","😚","😻","🫶","💞",
-"✨","💫","🌹","🙈","😎","❤️‍🔥","😭","👍"
-];
-
-emojis.forEach(emoji=>{
-  const btn=document.createElement("button");
-  btn.textContent=emoji;
-  btn.onclick=()=>{
-    input.value+=emoji;
-    input.dispatchEvent(new Event("input"));
-    input.focus();
+  const firebaseConfig = {
+    apiKey: "AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
+    authDomain: "private-chat-4c4a8.firebaseapp.com",
+    databaseURL: "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "private-chat-4c4a8",
+    storageBucket: "private-chat-4c4a8.firebasestorage.app",
+    messagingSenderId: "333493856166",
+    appId: "1:333493856166:web:a753d6dfc6db986c8b9167"
   };
-  $("emojiGrid").appendChild(btn);
-});
 
-$("emojiBtn").onclick=()=>{
-  const panel=$("emojiPanel");
-  panel.style.display=panel.style.display==="block"?"none":"block";
-};
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
 
-/* KEYBOARD FIX */
-function adjustViewport(){
-  const viewport=window.visualViewport;
-  if(!viewport)return;
-  const height=viewport.height;
-  const offset=viewport.offsetTop;
-  const screen=$("chatScreen");
-  screen.style.height=height+"px";
-  screen.style.top=offset+"px";
-  if(document.activeElement===input){
-    requestAnimationFrame(scrollBottom);
+
+  /* =========================================================
+     AUTHORIZED USERS
+  ========================================================= */
+
+  const AUTHORIZED_UIDS = [
+    "4kQ8bajQmPgYzhej526WHTofvWW2",
+    "4S0l5VRvoPQdQ1qE8XaypIZprD33"
+  ];
+
+
+  let currentUser = null;
+  let messagesListener = null;
+  let presenceListeners = [];
+  let typingListeners = [];
+
+  let lastMessageDate = "";
+
+  let typingTimer = null;
+
+
+  /* =========================================================
+     DOM
+  ========================================================= */
+
+  const loginScreen = document.getElementById("loginScreen");
+  const chatScreen = document.getElementById("chatScreen");
+
+  const emailInput = document.getElementById("emailInput");
+  const passwordInput = document.getElementById("passwordInput");
+
+  const loginBtn = document.getElementById("loginBtn");
+  const loginError = document.getElementById("loginError");
+
+  const messagesEl = document.getElementById("messages");
+
+  const messageInput = document.getElementById("messageInput");
+  const sendBtn = document.getElementById("sendBtn");
+
+  const headerStatus = document.getElementById("headerStatus");
+
+  const typingBubble = document.getElementById("typingBubble");
+
+  const emojiBtn = document.getElementById("emojiBtn");
+  const emojiPicker = document.getElementById("emojiPicker");
+
+  const photoBtn = document.getElementById("photoBtn");
+  const photoInput = document.getElementById("photoInput");
+
+  const photoViewer = document.getElementById("photoViewer");
+  const viewerPhoto = document.getElementById("viewerPhoto");
+  const closePhoto = document.getElementById("closePhoto");
+
+  const photoSending = document.getElementById("photoSending");
+
+  const clearBtn = document.getElementById("clearBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+
+
+  /* =========================================================
+     EMOJIS
+  ========================================================= */
+
+  const emojis = [
+    "😀","😃","😄","😁","😆","😅","😂","🤣",
+    "😊","😇","🙂","🙃","😉","😌","😍","🥰",
+    "😘","😗","😙","😚","😋","😛","😝","😜",
+    "🤪","🤨","🧐","🤓","😎","🥳","🤩","🥹",
+    "❤️","🧡","💛","💚","💙","💜","🖤","🤍",
+    "💯","🔥","✨","🎉","👍","👎","👏","🙏",
+    "😂","🤣","😭","😢","😡","😱","🤔","😴"
+  ];
+
+  emojis.forEach(emoji => {
+
+    const btn = document.createElement("button");
+
+    btn.className = "emoji-btn";
+    btn.textContent = emoji;
+
+    btn.addEventListener("click", () => {
+
+      messageInput.value += emoji;
+
+      messageInput.focus();
+
+      autoResizeTextarea();
+
+      setTyping(true);
+    });
+
+    emojiPicker.appendChild(btn);
+  });
+
+
+  emojiBtn.addEventListener("click", () => {
+    emojiPicker.classList.toggle("show");
+  });
+
+
+  document.addEventListener("click", event => {
+
+    if(
+      !emojiPicker.contains(event.target) &&
+      event.target !== emojiBtn
+    ){
+      emojiPicker.classList.remove("show");
+    }
+
+  });
+
+
+  /* =========================================================
+     LOGIN
+  ========================================================= */
+
+  loginBtn.addEventListener("click", login);
+
+  passwordInput.addEventListener("keydown", event => {
+
+    if(event.key === "Enter"){
+      login();
+    }
+
+  });
+
+
+  async function login(){
+
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+
+    loginError.textContent = "";
+
+    if(!email || !password){
+
+      loginError.textContent = "Email aur password enter karo.";
+
+      return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.textContent = "Logging in...";
+
+    try{
+
+      await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+
+    }catch(error){
+
+      console.error(error);
+
+      loginError.textContent =
+        "Login failed. Email/password check karo.";
+
+    }
+
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Login";
   }
-}
 
-if(window.visualViewport){
-  window.visualViewport.addEventListener("resize",adjustViewport);
-  window.visualViewport.addEventListener("scroll",adjustViewport);
-}
-window.addEventListener("resize",adjustViewport);
-input.addEventListener("focus",()=>{
-  setTimeout(adjustViewport,150);
-  setTimeout(adjustViewport,350);
-});
 
-onAuthStateChanged(auth,async u=>{
-  unsub.forEach(fn=>fn());
-  unsub=[];
-  clearTimeout(typingTimer);
-  user=u;
+  /* =========================================================
+     AUTH STATE
+  ========================================================= */
 
-  if(!u){
-    $("loginScreen").classList.remove("hidden");
-    $("chatScreen").classList.add("hidden");
-    resetMessages();
-    return;
+  onAuthStateChanged(auth, async user => {
+
+    cleanupListeners();
+
+    messagesEl.innerHTML = "";
+    lastMessageDate = "";
+
+    if(!user){
+
+      currentUser = null;
+
+      loginScreen.style.display = "flex";
+      chatScreen.style.display = "none";
+
+      return;
+    }
+
+    if(!AUTHORIZED_UIDS.includes(user.uid)){
+
+      await signOut(auth);
+
+      loginError.textContent =
+        "This account is not authorized.";
+
+      return;
+    }
+
+    currentUser = user;
+
+    loginScreen.style.display = "none";
+    chatScreen.style.display = "flex";
+
+    setupPresence();
+    setupMessages();
+    setupTypingListener();
+
+  });
+
+
+  /* =========================================================
+     PRESENCE
+  ========================================================= */
+
+  function setupPresence(){
+
+    if(!currentUser) return;
+
+    const presenceRef =
+      ref(db, "messages/__presence__/" + currentUser.uid);
+
+    const connectedRef =
+      ref(db, ".info/connected");
+
+    onValue(connectedRef, async snapshot => {
+
+      if(snapshot.val() !== true){
+        return;
+      }
+
+      await onDisconnect(presenceRef).set({
+        online:false,
+        lastSeen:Date.now()
+      });
+
+      await set(presenceRef, {
+        online:true,
+        lastSeen:Date.now()
+      });
+
+    });
+
+    const otherUid =
+      AUTHORIZED_UIDS.find(uid => uid !== currentUser.uid);
+
+    if(otherUid){
+
+      const otherPresenceRef =
+        ref(db, "messages/__presence__/" + otherUid);
+
+      const unsubscribe = onValue(
+        otherPresenceRef,
+        snapshot => {
+
+          const data = snapshot.val();
+
+          if(!data){
+
+            headerStatus.textContent = "Offline";
+
+            return;
+          }
+
+          if(data.online){
+
+            headerStatus.textContent = "online";
+
+          }else{
+
+            headerStatus.textContent =
+              "last seen " + formatLastSeen(data.lastSeen);
+
+          }
+
+        }
+      );
+
+      presenceListeners.push(unsubscribe);
+    }
+
   }
 
-  if(u.uid!==USER1&&u.uid!==USER2){
-    await signOut(auth);
-    $("error").textContent="Unauthorized account.";
-    return;
+
+  function formatLastSeen(timestamp){
+
+    if(!timestamp) return "recently";
+
+    const date = new Date(timestamp);
+
+    return date.toLocaleString([],{
+      day:"2-digit",
+      month:"short",
+      hour:"2-digit",
+      minute:"2-digit"
+    });
+
   }
 
-  $("loginScreen").classList.add("hidden");
-  $("chatScreen").classList.remove("hidden");
 
-  resetMessages();
-  otherPresence=null;
-  otherTyping=false;
-  refreshStatus();
+  /* =========================================================
+     MESSAGES
+  ========================================================= */
 
-  listenPresence();
-  listenMessages();
-  adjustViewport();
-});
+  function setupMessages(){
+
+    const messagesRef = ref(db,"messages");
+
+    messagesListener = onChildAdded(
+      messagesRef,
+      snapshot => {
+
+        const key = snapshot.key;
+
+        /* Special Firebase nodes skip karo */
+
+        if(key.startsWith("__")){
+          return;
+        }
+
+        const message = snapshot.val();
+
+        if(!message || !message.type){
+          return;
+        }
+
+        renderMessage(message);
+
+      }
+    );
+
+  }
+
+
+  function renderMessage(message){
+
+    if(
+      message.type !== "text" &&
+      message.type !== "photo"
+    ){
+      return;
+    }
+
+    const isMe =
+      message.sender === currentUser.uid;
+
+    const date = new Date(
+      message.timestamp || Date.now()
+    );
+
+    const dateText = date.toLocaleDateString([],{
+      day:"numeric",
+      month:"long",
+      year:"numeric"
+    });
+
+    if(dateText !== lastMessageDate){
+
+      lastMessageDate = dateText;
+
+      const separator =
+        document.createElement("div");
+
+      separator.className =
+        "date-separator";
+
+      const span =
+        document.createElement("span");
+
+      span.textContent = dateText;
+
+      separator.appendChild(span);
+
+      messagesEl.appendChild(separator);
+    }
+
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "message-row " +
+      (isMe ? "me" : "other");
+
+
+    const bubble =
+      document.createElement("div");
+
+    bubble.className = "bubble";
+
+
+    if(message.type === "text"){
+
+      const text =
+        document.createElement("span");
+
+      text.className = "message-text";
+
+      text.textContent = message.text || "";
+
+      bubble.appendChild(text);
+
+    }
+
+
+    if(message.type === "photo"){
+
+      const img =
+        document.createElement("img");
+
+      img.className = "chat-photo";
+
+      img.alt = "Photo";
+
+      /*
+       * P2P photos are not saved to Firebase.
+       * They are displayed only if a temporary Blob URL
+       * was created in this browser.
+       */
+
+      if(message.localUrl){
+
+        img.src = message.localUrl;
+
+        img.addEventListener("click", () => {
+
+          openPhotoViewer(message.localUrl);
+
+        });
+
+      }else{
+
+        img.style.display = "none";
+
+        const label =
+          document.createElement("div");
+
+        label.className = "photo-label";
+
+        label.textContent =
+          "Photo";
+
+        bubble.appendChild(label);
+
+      }
+
+      bubble.appendChild(img);
+
+    }
+
+
+    const time =
+      document.createElement("span");
+
+    time.className = "message-time";
+
+    time.textContent =
+      date.toLocaleTimeString([],{
+        hour:"2-digit",
+        minute:"2-digit"
+      });
+
+
+    if(isMe){
+
+      const ticks =
+        document.createElement("span");
+
+      ticks.className =
+        "ticks " +
+        (message.read ? "" : "sent");
+
+      ticks.textContent =
+        message.read ? "✓✓" : "✓";
+
+      time.appendChild(ticks);
+    }
+
+
+    bubble.appendChild(time);
+
+    row.appendChild(bubble);
+
+    messagesEl.appendChild(row);
+
+    scrollMessagesToBottom();
+
+  }
+
+
+  function scrollMessagesToBottom(){
+
+    requestAnimationFrame(() => {
+
+      messagesEl.scrollTop =
+        messagesEl.scrollHeight;
+
+    });
+
+  }
+
+
+  /* =========================================================
+     SEND TEXT
+  ========================================================= */
+
+  sendBtn.addEventListener("click", sendMessage);
+
+  messageInput.addEventListener("keydown", event => {
+
+    if(
+      event.key === "Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      sendMessage();
+
+    }
+
+  });
+
+
+  async function sendMessage(){
+
+    if(!currentUser) return;
+
+    const text =
+      messageInput.value.trim();
+
+    if(!text) return;
+
+    try{
+
+      await push(
+        ref(db,"messages"),
+        {
+          type:"text",
+          text:text,
+          sender:currentUser.uid,
+          email:currentUser.email || "",
+          timestamp:Date.now(),
+          read:false
+        }
+      );
+
+      messageInput.value = "";
+
+      autoResizeTextarea();
+
+      setTyping(false);
+
+      emojiPicker.classList.remove("show");
+
+    }catch(error){
+
+      console.error(error);
+
+      alert("Message send nahi hua.");
+
+    }
+
+  }
+
+
+  /* =========================================================
+     TYPING
+  ========================================================= */
+
+  messageInput.addEventListener("input", () => {
+
+    autoResizeTextarea();
+
+    setTyping(true);
+
+    clearTimeout(typingTimer);
+
+    typingTimer = setTimeout(() => {
+
+      setTyping(false);
+
+    },1200);
+
+  });
+
+
+  async function setTyping(status){
+
+    if(!currentUser) return;
+
+    try{
+
+      await set(
+        ref(
+          db,
+          "messages/__typing__/" +
+          currentUser.uid
+        ),
+        {
+          typing:status,
+          timestamp:Date.now()
+        }
+      );
+
+    }catch(error){
+
+      console.log("Typing update error",error);
+
+    }
+
+  }
+
+
+  function setupTypingListener(){
+
+    const otherUid =
+      AUTHORIZED_UIDS.find(uid => uid !== currentUser.uid);
+
+    if(!otherUid) return;
+
+    const typingRef =
+      ref(
+        db,
+        "messages/__typing__/" +
+        otherUid
+      );
+
+    const unsubscribe =
+      onValue(
+        typingRef,
+        snapshot => {
+
+          const data = snapshot.val();
+
+          if(data && data.typing){
+
+            typingBubble.classList.add("show");
+
+          }else{
+
+            typingBubble.classList.remove("show");
+
+          }
+
+        }
+      );
+
+    typingListeners.push(unsubscribe);
+
+  }
+
+
+  /* =========================================================
+     TEXTAREA
+  ========================================================= */
+
+  function autoResizeTextarea(){
+
+    messageInput.style.height = "auto";
+
+    messageInput.style.height =
+      Math.min(
+        messageInput.scrollHeight,
+        120
+      ) + "px";
+
+  }
+
+
+  /* =========================================================
+     CLEAR CHAT
+  ========================================================= */
+
+  clearBtn.addEventListener("click", async () => {
+
+    if(!currentUser) return;
+
+    const confirmDelete =
+      confirm(
+        "Kya aap dono ke liye complete chat history delete karna chahte ho?"
+      );
+
+    if(!confirmDelete){
+      return;
+    }
+
+    try{
+
+      const snapshot =
+        await get(ref(db,"messages"));
+
+      const changes = {};
+
+      snapshot.forEach(child => {
+
+        if(
+          child.key &&
+          !child.key.startsWith("__")
+        ){
+
+          changes[child.key] = null;
+
+        }
+
+      });
+
+      if(Object.keys(changes).length){
+
+        await update(
+          ref(db,"messages"),
+          changes
+        );
+
+      }
+
+      messagesEl.innerHTML = "";
+
+      lastMessageDate = "";
+
+      alert(
+        "Chat history deleted for both users."
+      );
+
+    }catch(error){
+
+      console.error(error);
+
+      alert("Chat history delete nahi hui.");
+
+    }
+
+  });
+
+
+  /* =========================================================
+     LOGOUT
+  ========================================================= */
+
+  logoutBtn.addEventListener("click", async () => {
+
+    if(
+      confirm("Logout karna hai?")
+    ){
+
+      try{
+
+        if(currentUser){
+
+          await set(
+            ref(
+              db,
+              "messages/__presence__/" +
+              currentUser.uid
+            ),
+            {
+              online:false,
+              lastSeen:Date.now()
+            }
+          );
+
+          await setTyping(false);
+        }
+
+        await signOut(auth);
+
+      }catch(error){
+
+        console.error(error);
+
+      }
+
+    }
+
+  });
+
+
+  /* =========================================================
+     P2P PHOTO SYSTEM
+  =========================================================
+
+     Firebase RTDB:
+       ONLY temporary signaling
+
+     Actual photo:
+       WebRTC DataChannel
+
+     Firebase Storage:
+       NOT USED
+  ========================================================= */
+
+
+  let activePeerConnection = null;
+  let activeDataChannel = null;
+
+  let photoSessionId = null;
+
+  let photoReceiveMeta = null;
+  let photoReceiveChunks = [];
+  let photoReceiveBytes = 0;
+
+  let currentViewerUrl = null;
+
+  let signalingUnsubscribe = null;
+
+
+  const rtcConfig = {
+
+    iceServers:[
+      {
+        urls:"stun:stun.l.google.com:19302"
+      },
+      {
+        urls:"stun:stun1.l.google.com:19302"
+      }
+    ]
+
+  };
+
+
+  /* =========================================================
+     PHOTO BUTTON
+  ========================================================= */
+
+  photoBtn.addEventListener("click", () => {
+
+    photoInput.value = "";
+
+    photoInput.click();
+
+  });
+
+
+  photoInput.addEventListener(
+    "change",
+    async event => {
+
+      const file =
+        event.target.files?.[0];
+
+      if(!file) return;
+
+      if(!file.type.startsWith("image/")){
+
+        alert("Sirf image select karo.");
+
+        return;
+      }
+
+      try{
+
+        const compressed =
+          await compressImage(file);
+
+        await sendPhotoP2P(compressed);
+
+      }catch(error){
+
+        console.error(error);
+
+        alert(
+          "Photo send nahi ho payi."
+        );
+
+      }
+
+    }
+  );
+
+
+  /* =========================================================
+     COMPRESS PHOTO
+  ========================================================= */
+
+  async function compressImage(file){
+
+    const bitmap =
+      await createImageBitmap(file);
+
+    const maxSize = 1280;
+
+    let width = bitmap.width;
+    let height = bitmap.height;
+
+    if(
+      width > maxSize ||
+      height > maxSize
+    ){
+
+      const ratio =
+        Math.min(
+          maxSize / width,
+          maxSize / height
+        );
+
+      width =
+        Math.round(width * ratio);
+
+      height =
+        Math.round(height * ratio);
+    }
+
+
+    const canvas =
+      document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx =
+      canvas.getContext("2d");
+
+    ctx.drawImage(
+      bitmap,
+      0,
+      0,
+      width,
+      height
+    );
+
+
+    const blob =
+      await new Promise(resolve => {
+
+        canvas.toBlob(
+          resolve,
+          "image/jpeg",
+          0.78
+        );
+
+      });
+
+
+    bitmap.close();
+
+    if(!blob){
+
+      throw new Error(
+        "Image compression failed"
+      );
+
+    }
+
+    return blob;
+
+  }
+
+
+  /* =========================================================
+     SEND PHOTO
+  ========================================================= */
+
+  async function sendPhotoP2P(blob){
+
+    if(!currentUser){
+
+      alert("Login required.");
+
+      return;
+    }
+
+
+    photoSending.classList.add("show");
+
+    cleanupPeerConnection();
+
+
+    const sessionRef =
+      push(
+        ref(db,"messages/__photo_signal__")
+      );
+
+    photoSessionId =
+      sessionRef.key;
+
+
+    const sessionPath =
+      "messages/__photo_signal__/" +
+      photoSessionId;
+
+
+    const pc =
+      new RTCPeerConnection(rtcConfig);
+
+    activePeerConnection = pc;
+
+
+    const channel =
+      pc.createDataChannel(
+        "photo",
+        {
+          ordered:true
+        }
+      );
+
+    activeDataChannel = channel;
+
+
+    const callerCandidatesRef =
+      ref(
+        db,
+        sessionPath +
+        "/callerCandidates"
+      );
+
+
+    pc.onicecandidate =
+      async event => {
+
+        if(event.candidate){
+
+          await push(
+            callerCandidatesRef,
+            event.candidate.toJSON()
+          );
+
+        }
+
+      };
+
+
+    channel.onopen = async () => {
+
+      console.log(
+        "P2P photo channel opened"
+      );
+
+      try{
+
+        await transferPhoto(
+          channel,
+          blob
+        );
+
+        photoSending.textContent =
+          "Photo sent ✓";
+
+        setTimeout(() => {
+
+          photoSending.classList.remove("show");
+
+        },700);
+
+      }catch(error){
+
+        console.error(error);
+
+        photoSending.classList.remove("show");
+
+        alert(
+          "Photo transfer failed."
+        );
+
+      }
+
+    };
+
+
+    channel.onerror = error => {
+
+      console.error(
+        "Photo channel error",
+        error
+      );
+
+      photoSending.classList.remove("show");
+
+    };
+
+
+    const offer =
+      await pc.createOffer();
+
+    await pc.setLocalDescription(offer);
+
+
+    await set(
+      sessionRef,
+      {
+        caller:currentUser.uid,
+        createdAt:Date.now(),
+        status:"waiting",
+        offer:{
+          type:offer.type,
+          sdp:offer.sdp
+        }
+      }
+    );
+
+
+    /*
+     * Receiver answer
+     */
+
+    const answerRef =
+      ref(
+        db,
+        sessionPath +
+        "/answer"
+      );
+
+
+    const answerUnsubscribe =
+      onValue(
+        answerRef,
+        async snapshot => {
+
+          const answer =
+            snapshot.val();
+
+          if(
+            answer &&
+            !pc.currentRemoteDescription
+          ){
+
+            try{
+
+              await pc.setRemoteDescription(
+                new RTCSessionDescription(answer)
+              );
+
+            }catch(error){
+
+              console.error(
+                "Set answer error",
+                error
+              );
+
+            }
+
+          }
+
+        }
+      );
+
+
+    /*
+     * Receiver ICE candidates
+     */
+
+    const calleeCandidatesRef =
+      ref(
+        db,
+        sessionPath +
+        "/calleeCandidates"
+      );
+
+
+    const calleeCandidatesUnsubscribe =
+      onChildAdded(
+        calleeCandidatesRef,
+        async snapshot => {
+
+          try{
+
+            const candidate =
+              snapshot.val();
+
+            await pc.addIceCandidate(
+              new RTCIceCandidate(candidate)
+            );
+
+          }catch(error){
+
+            console.log(
+              "ICE candidate error",
+              error
+            );
+
+          }
+
+        }
+      );
+
+
+    /*
+     * Receiver watches session.
+     * Another user can accept the photo.
+     */
+
+    const sessionWatcher =
+      onValue(
+        sessionRef,
+        snapshot => {
+
+          if(!snapshot.exists()){
+
+            answerUnsubscribe();
+            calleeCandidatesUnsubscribe();
+            cleanupPeerConnection();
+
+          }
+
+        }
+      );
+
+
+    signalingUnsubscribe = () => {
+
+      answerUnsubscribe();
+      calleeCandidatesUnsubscribe();
+      sessionWatcher();
+
+    };
+
+  }
+
+
+  /* =========================================================
+     RECEIVE / ACCEPT PHOTO SESSION
+  ========================================================= */
+
+  async function acceptIncomingPhotoSession(
+    sessionId,
+    sessionData
+  ){
+
+    if(!currentUser) return;
+
+    if(
+      !sessionData ||
+      !sessionData.offer
+    ){
+
+      return;
+    }
+
+
+    /*
+     * Caller apne hi offer ko receive na kare.
+     */
+
+    if(
+      sessionData.caller === currentUser.uid
+    ){
+
+      return;
+    }
+
+
+    /*
+     * Same session ko baar-baar process mat karo.
+     */
+
+    if(photoSessionId === sessionId){
+
+      return;
+    }
+
+
+    photoSessionId = sessionId;
+
+    cleanupPeerConnection();
+
+
+    const sessionPath =
+      "messages/__photo_signal__/" +
+      sessionId;
+
+
+    const sessionRef =
+      ref(db,sessionPath);
+
+
+    const pc =
+      new RTCPeerConnection(rtcConfig);
+
+    activePeerConnection = pc;
+
+
+    pc.ondatachannel = event => {
+
+      const channel =
+        event.channel;
+
+      activeDataChannel =
+        channel;
+
+      setupReceivingChannel(channel);
+
+    };
+
+
+    const calleeCandidatesRef =
+      ref(
+        db,
+        sessionPath +
+        "/calleeCandidates"
+      );
+
+
+    pc.onicecandidate =
+      async event => {
+
+        if(event.candidate){
+
+          await push(
+            calleeCandidatesRef,
+            event.candidate.toJSON()
+          );
+
+        }
+
+      };
+
+
+    const callerCandidatesRef =
+      ref(
+        db,
+        sessionPath +
+        "/callerCandidates"
+      );
+
+
+    const callerCandidatesUnsubscribe =
+      onChildAdded(
+        callerCandidatesRef,
+        async snapshot => {
+
+          try{
+
+            await pc.addIceCandidate(
+              new RTCIceCandidate(
+                snapshot.val()
+              )
+            );
+
+          }catch(error){
+
+            console.log(
+              "Caller ICE error",
+              error
+            );
+
+          }
+
+        }
+      );
+
+
+    try{
+
+      await pc.setRemoteDescription(
+        new RTCSessionDescription(
+          sessionData.offer
+        )
+      );
+
+
+      const answer =
+        await pc.createAnswer();
+
+      await pc.setLocalDescription(
+        answer
+      );
+
+
+      await update(
+        sessionRef,
+        {
+          answer:{
+            type:answer.type,
+            sdp:answer.sdp
+          },
+          callee:currentUser.uid,
+          status:"connected"
+        }
+      );
+
+
+    }catch(error){
+
+      console.error(
+        "Photo answer error",
+        error
+      );
+
+      callerCandidatesUnsubscribe();
+
+    }
+
+  }
+
+
+  /* =========================================================
+     PHOTO SIGNALING LISTENER
+  ========================================================= */
+
+  function setupPhotoSignaling(){
+
+    if(!currentUser) return;
+
+
+    const signalsRef =
+      ref(
+        db,
+        "messages/__photo_signal__"
+      );
+
+
+    onChildAdded(
+      signalsRef,
+      snapshot => {
+
+        const sessionId =
+          snapshot.key;
+
+        const sessionData =
+          snapshot.val();
+
+        acceptIncomingPhotoSession(
+          sessionId,
+          sessionData
+        );
+
+      }
+    );
+
+  }
+
+
+  /* =========================================================
+     RECEIVE PHOTO
+  ========================================================= */
+
+  function setupReceivingChannel(channel){
+
+    photoReceiveMeta = null;
+    photoReceiveChunks = [];
+    photoReceiveBytes = 0;
+
+
+    channel.onopen = () => {
+
+      console.log(
+        "P2P receive channel opened"
+      );
+
+    };
+
+
+    channel.onmessage = event => {
+
+      /*
+       * Metadata string
+       */
+
+      if(typeof event.data === "string"){
+
+        try{
+
+          const data =
+            JSON.parse(event.data);
+
+          if(
+            data.type === "photo-meta"
+          ){
+
+            photoReceiveMeta = data;
+
+            photoReceiveChunks = [];
+
+            photoReceiveBytes = 0;
+
+          }
+
+        }catch(error){
+
+          console.log(
+            "Metadata parse error",
+            error
+          );
+
+        }
+
+        return;
+      }
+
+
+      /*
+       * Binary chunk
+       */
+
+      if(
+        event.data instanceof ArrayBuffer ||
+        event.data instanceof Blob
+      ){
+
+        receivePhotoChunk(
+          event.data
+        );
+
+      }
+
+    };
+
+  }
+
+
+  async function receivePhotoChunk(chunk){
+
+    if(!photoReceiveMeta){
+
+      return;
+    }
+
+
+    let buffer;
+
+    if(chunk instanceof Blob){
+
+      buffer =
+        await chunk.arrayBuffer();
+
+    }else{
+
+      buffer = chunk;
+
+    }
+
+
+    photoReceiveChunks.push(buffer);
+
+    photoReceiveBytes +=
+      buffer.byteLength;
+
+
+    /*
+     * Transfer complete
+     */
+
+    if(
+      photoReceiveBytes >=
+      photoReceiveMeta.size
+    ){
+
+      const blob =
+        new Blob(
+          photoReceiveChunks,
+          {
+            type:
+              photoReceiveMeta.mime ||
+              "image/jpeg"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(blob);
+
+
+      /*
+       * Temporary viewer
+       */
+
+      openPhotoViewer(url);
+
+
+      /*
+       * Local chat preview only.
+       *
+       * The actual image is NOT written
+       * to Firebase.
+       */
+
+      addLocalPhotoMessage(url);
+
+
+      /*
+       * Clear temporary chunks
+       */
+
+      photoReceiveChunks = [];
+      photoReceiveBytes = 0;
+      photoReceiveMeta = null;
+
+    }
+
+  }
+
+
+  /* =========================================================
+     TRANSFER PHOTO IN SMALL CHUNKS
+  ========================================================= */
+
+  async function transferPhoto(
+    channel,
+    blob
+  ){
+
+    const CHUNK_SIZE = 16 * 1024;
+
+
+    /*
+     * Metadata first
+     */
+
+    channel.send(
+      JSON.stringify({
+        type:"photo-meta",
+        name:"photo.jpg",
+        mime:blob.type,
+        size:blob.size
+      })
+    );
+
+
+    let offset = 0;
+
+
+    while(
+      offset < blob.size
+    ){
+
+      const slice =
+        blob.slice(
+          offset,
+          offset + CHUNK_SIZE
+        );
+
+
+      const buffer =
+        await slice.arrayBuffer();
+
+
+      /*
+       * Wait if WebRTC buffer is full.
+       */
+
+      while(
+        channel.bufferedAmount >
+        1024 * 1024
+      ){
+
+        await wait(50);
+
+      }
+
+
+      channel.send(buffer);
+
+      offset += buffer.byteLength;
+
+    }
+
+  }
+
+
+  function wait(ms){
+
+    return new Promise(
+      resolve => setTimeout(resolve,ms)
+    );
+
+  }
+
+
+  /* =========================================================
+     LOCAL PHOTO MESSAGE
+  ========================================================= */
+
+  function addLocalPhotoMessage(url){
+
+    const isMe = false;
+
+    const row =
+      document.createElement("div");
+
+    row.className =
+      "message-row other";
+
+
+    const bubble =
+      document.createElement("div");
+
+    bubble.className =
+      "bubble";
+
+
+    const img =
+      document.createElement("img");
+
+    img.className =
+      "chat-photo";
+
+    img.src = url;
+
+    img.alt = "Temporary photo";
+
+
+    img.addEventListener(
+      "click",
+      () => {
+
+        openPhotoViewer(url);
+
+      }
+    );
+
+
+    bubble.appendChild(img);
+
+
+    const time =
+      document.createElement("span");
+
+    time.className =
+      "message-time";
+
+    time.textContent =
+      new Date().toLocaleTimeString([],{
+        hour:"2-digit",
+        minute:"2-digit"
+      });
+
+
+    bubble.appendChild(time);
+
+    row.appendChild(bubble);
+
+    messagesEl.appendChild(row);
+
+    scrollMessagesToBottom();
+
+  }
+
+
+  /* =========================================================
+     PHOTO VIEWER
+  ========================================================= */
+
+  function openPhotoViewer(url){
+
+    /*
+     * Previous viewer cleanup
+     */
+
+    if(currentViewerUrl){
+
+      try{
+
+        URL.revokeObjectURL(
+          currentViewerUrl
+        );
+
+      }catch(error){}
+
+    }
+
+
+    currentViewerUrl = url;
+
+    viewerPhoto.src = url;
+
+    photoViewer.classList.add("show");
+
+
+    /*
+     * Browser back button support
+     */
+
+    try{
+
+      history.pushState(
+        {
+          privateChatPhoto:true
+        },
+        ""
+      );
+
+    }catch(error){}
+
+  }
+
+
+  function closePhotoViewer(){
+
+    photoViewer.classList.remove("show");
+
+    viewerPhoto.removeAttribute("src");
+
+
+    if(currentViewerUrl){
+
+      /*
+       * Release object URL.
+       */
+
+      try{
+
+        URL.revokeObjectURL(
+          currentViewerUrl
+        );
+
+      }catch(error){}
+
+      currentViewerUrl = null;
+
+    }
+
+
+    /*
+     * Remove local references
+     */
+
+    photoReceiveChunks = [];
+    photoReceiveMeta = null;
+    photoReceiveBytes = 0;
+
+  }
+
+
+  closePhoto.addEventListener(
+    "click",
+    closePhotoViewer
+  );
+
+
+  photoViewer.addEventListener(
+    "click",
+    event => {
+
+      if(event.target === photoViewer){
+
+        closePhotoViewer();
+
+      }
+
+    }
+  );
+
+
+  window.addEventListener(
+    "popstate",
+    () => {
+
+      if(
+        photoViewer.classList.contains("show")
+      ){
+
+        closePhotoViewer();
+
+      }
+
+    }
+  );
+
+
+  /* =========================================================
+     PEER CLEANUP
+  ========================================================= */
+
+  function cleanupPeerConnection(){
+
+    if(activeDataChannel){
+
+      try{
+
+        activeDataChannel.close();
+
+      }catch(error){}
+
+    }
+
+
+    if(activePeerConnection){
+
+      try{
+
+        activePeerConnection.close();
+
+      }catch(error){}
+
+    }
+
+
+    activeDataChannel = null;
+    activePeerConnection = null;
+
+  }
+
+
+  /* =========================================================
+     GENERAL CLEANUP
+  ========================================================= */
+
+  function cleanupListeners(){
+
+    if(messagesListener){
+
+      try{
+        messagesListener();
+      }catch(error){}
+
+      messagesListener = null;
+    }
+
+
+    presenceListeners.forEach(
+      unsubscribe => {
+
+        try{
+          unsubscribe();
+        }catch(error){}
+
+      }
+    );
+
+    presenceListeners = [];
+
+
+    typingListeners.forEach(
+      unsubscribe => {
+
+        try{
+          unsubscribe();
+        }catch(error){}
+
+      }
+    );
+
+    typingListeners = [];
+
+
+    cleanupPeerConnection();
+
+    if(signalingUnsubscribe){
+
+      try{
+
+        signalingUnsubscribe();
+
+      }catch(error){}
+
+      signalingUnsubscribe = null;
+
+    }
+
+  }
+
+
+  /* =========================================================
+     START PHOTO SIGNALING AFTER LOGIN
+  ========================================================= */
+
+  const originalSetupPresence =
+    setupPresence;
+
+
+  /*
+   * Photo signaling needs authenticated user,
+   * therefore start it after auth.
+   */
+
+  onAuthStateChanged(auth,user => {
+
+    if(
+      user &&
+      AUTHORIZED_UIDS.includes(user.uid)
+    ){
+
+      setTimeout(() => {
+
+        setupPhotoSignaling();
+
+      },300);
+
+    }
+
+  });
+
+
+  /* =========================================================
+     MOBILE KEYBOARD / VIEWPORT
+  ========================================================= */
+
+  if(window.visualViewport){
+
+    const adjustViewport = () => {
+
+      /*
+       * Keep chat layout stable when keyboard opens.
+       */
+
+      document.documentElement.style
+        .setProperty(
+          "--viewport-height",
+          window.visualViewport.height + "px"
+        );
+
+    };
+
+
+    window.visualViewport.addEventListener(
+      "resize",
+      adjustViewport
+    );
+
+    window.visualViewport.addEventListener(
+      "scroll",
+      adjustViewport
+    );
+
+    adjustViewport();
+
+  }
+
 </script>
+
 </body>
 </html>
