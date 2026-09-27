@@ -1,1828 +1,656 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#12091c">
-  <title>Private Chat ❤️</title>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background:
-        radial-gradient(circle at 20% 10%, rgba(255, 0, 128, 0.18), transparent 30%),
-        radial-gradient(circle at 85% 90%, rgba(130, 50, 255, 0.20), transparent 35%),
-        linear-gradient(135deg, #09060d, #15091e 50%, #09060d);
-      min-height: 100vh;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    /* ================= LOGIN ================= */
-
-    #loginScreen {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 390px;
-      padding: 38px 28px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 28px;
-      background: rgba(255, 255, 255, 0.07);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
-      box-shadow:
-        0 0 50px rgba(255, 0, 140, 0.12),
-        0 25px 80px rgba(0, 0, 0, 0.55);
-      text-align: center;
-    }
-
-    .login-heart {
-      width: 82px;
-      height: 82px;
-      margin: 0 auto 20px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      background: linear-gradient(145deg, #ff1687, #7d25ff);
-      box-shadow:
-        0 0 25px rgba(255, 20, 140, 0.55),
-        0 0 65px rgba(125, 37, 255, 0.30);
-      animation: heartbeat 2s infinite;
-    }
-
-    @keyframes heartbeat {
-      0%, 100% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.06);
-      }
-    }
-
-    .login-card h1 {
-      font-size: 28px;
-      margin-bottom: 7px;
-      letter-spacing: 0.5px;
-    }
-
-    .login-card p {
-      color: #c8baca;
-      font-size: 14px;
-      margin-bottom: 25px;
-    }
-
-    .login-card input {
-      width: 100%;
-      padding: 15px 16px;
-      margin-bottom: 13px;
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 15px;
-      outline: none;
-      background: rgba(0,0,0,0.28);
-      color: white;
-      font-size: 15px;
-    }
-
-    .login-card input::placeholder {
-      color: #9b8ca2;
-    }
-
-    .login-card input:focus {
-      border-color: #ff2b9a;
-      box-shadow: 0 0 18px rgba(255, 43, 154, 0.18);
-    }
-
-    #loginButton {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 15px;
-      color: white;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      background: linear-gradient(135deg, #ff1687, #8c25ff);
-      box-shadow: 0 8px 25px rgba(255, 0, 130, 0.25);
-    }
-
-    #loginButton:active {
-      transform: scale(0.98);
-    }
-
-    #loginError {
-      color: #ff7ebd;
-      font-size: 13px;
-      margin-top: 15px;
-      min-height: 18px;
-    }
-
-    /* ================= CHAT APP ================= */
-
-    #chatScreen {
-      display: none;
-      height: 100vh;
-      width: 100%;
-    }
-
-    .chat-app {
-      width: 100%;
-      max-width: 900px;
-      height: 100vh;
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      background: rgba(10, 7, 14, 0.78);
-      box-shadow: 0 0 100px rgba(255, 0, 140, 0.08);
-      position: relative;
-    }
-
-    /* ================= HEADER ================= */
-
-    .chat-header {
-      min-height: 74px;
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      gap: 11px;
-      background: rgba(24, 12, 31, 0.92);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      backdrop-filter: blur(20px);
-      position: relative;
-      z-index: 5;
-    }
-
-    .avatar {
-      width: 47px;
-      height: 47px;
-      flex-shrink: 0;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 23px;
-      background: linear-gradient(145deg, #ff1687, #7c28ff);
-      box-shadow: 0 0 20px rgba(255, 0, 130, 0.32);
-    }
-
-    .header-info {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .header-info h2 {
-      font-size: 16px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    #statusText {
-      font-size: 12px;
-      color: #aaa0b1;
-      margin-top: 3px;
-    }
-
-    #statusText.online {
-      color: #ff63b4;
-    }
-
-    #statusText.typing {
-      color: #ff4ca9;
-      font-weight: 600;
-    }
-
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .icon-btn {
-      width: 38px;
-      height: 38px;
-      border: none;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.06);
-      color: #eee;
-      cursor: pointer;
-      font-size: 17px;
-      transition: 0.2s;
-    }
-
-    .icon-btn:hover {
-      background: rgba(255, 35, 150, 0.16);
-      color: #ff69b9;
-      box-shadow: 0 0 15px rgba(255, 35, 150, 0.15);
-    }
-
-    .logout-btn {
-      font-size: 15px;
-    }
-
-    /* ================= MESSAGES ================= */
-
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 15px 15px;
-      scroll-behavior: smooth;
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255, 0, 130, 0.055), transparent 35%);
-    }
-
-    #messages::-webkit-scrollbar {
-      width: 5px;
-    }
-
-    #messages::-webkit-scrollbar-thumb {
-      background: rgba(255, 55, 160, 0.25);
-      border-radius: 20px;
-    }
-
-    .date-separator {
-      width: fit-content;
-      margin: 10px auto 16px;
-      padding: 6px 13px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.07);
-      color: #bcaebe;
-      font-size: 11px;
-      border: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .message-row {
-      display: flex;
-      margin-bottom: 9px;
-      animation: messageIn 0.2s ease-out;
-    }
-
-    @keyframes messageIn {
-      from {
-        opacity: 0;
-        transform: translateY(5px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .message-row.mine {
-      justify-content: flex-end;
-    }
-
-    .message-row.theirs {
-      justify-content: flex-start;
-    }
-
-    .bubble {
-      max-width: min(75%, 580px);
-      padding: 9px 11px 7px;
-      border-radius: 18px;
-      position: relative;
-      word-break: break-word;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-
-    .mine .bubble {
-      background: linear-gradient(135deg, #a91869, #7623a6);
-      border-bottom-right-radius: 5px;
-      box-shadow: 0 5px 18px rgba(255, 0, 130, 0.10);
-    }
-
-    .theirs .bubble {
-      background: rgba(255,255,255,0.085);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-bottom-left-radius: 5px;
-    }
-
-    .message-text {
-      padding-right: 48px;
-      white-space: pre-wrap;
-    }
-
-    .message-meta {
-      float: right;
-      margin-left: 8px;
-      margin-top: 5px;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      height: 14px;
-      color: rgba(255,255,255,0.62);
-      font-size: 10px;
-    }
-
-    .ticks {
-      font-size: 13px;
-      letter-spacing: -4px;
-      padding-right: 3px;
-    }
-
-    .ticks.read {
-      color: #58c7ff;
-    }
-
-    /* ================= TYPING ================= */
-
-    .typing-bubble {
-      display: none;
-      width: fit-content;
-      padding: 9px 13px;
-      margin-bottom: 8px;
-      border-radius: 18px;
-      border-bottom-left-radius: 5px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-
-    .typing-dots {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .typing-dots span {
-      width: 6px;
-      height: 6px;
-      background: #ff5eb0;
-      border-radius: 50%;
-      animation: typingDot 1.2s infinite;
-    }
-
-    .typing-dots span:nth-child(2) {
-      animation-delay: 0.15s;
-    }
-
-    .typing-dots span:nth-child(3) {
-      animation-delay: 0.3s;
-    }
-
-    @keyframes typingDot {
-      0%, 60%, 100% {
-        transform: translateY(0);
-        opacity: 0.45;
-      }
-      30% {
-        transform: translateY(-4px);
-        opacity: 1;
-      }
-    }
-
-    /* ================= INPUT ================= */
-
-    .input-area {
-      padding: 10px 12px 12px;
-      background: rgba(22, 11, 29, 0.96);
-      border-top: 1px solid rgba(255,255,255,0.07);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .input-wrap {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      border-radius: 25px;
-      background: rgba(255,255,255,0.075);
-      border: 1px solid rgba(255,255,255,0.07);
-      padding: 0 5px 0 8px;
-    }
-
-    .emoji-btn,
-    .gif-btn {
-      border: none;
-      background: transparent;
-      color: #d6cbd8;
-      cursor: pointer;
-      font-size: 19px;
-      width: 34px;
-      height: 40px;
-      flex-shrink: 0;
-    }
-
-    .gif-btn {
-      font-size: 12px;
-      font-weight: 800;
-      color: #ff66b8;
-    }
-
-    #messageInput {
-      flex: 1;
-      min-width: 0;
-      height: 42px;
-      border: none;
-      outline: none;
-      background: transparent;
-      color: white;
-      font-size: 15px;
-      padding: 0 4px;
-    }
-
-    #messageInput::placeholder {
-      color: #988c9e;
-    }
-
-    #sendButton {
-      width: 45px;
-      height: 45px;
-      border: none;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #ff1687, #8425ff);
-      color: white;
-      cursor: pointer;
-      font-size: 19px;
-      box-shadow: 0 5px 20px rgba(255, 0, 130, 0.25);
-      flex-shrink: 0;
-    }
-
-    #sendButton:active {
-      transform: scale(0.92);
-    }
-
-    /* ================= EMOJI PANEL ================= */
-
-    #emojiPanel {
-      display: none;
-      position: absolute;
-      bottom: 76px;
-      left: 12px;
-      width: min(330px, calc(100% - 24px));
-      padding: 12px;
-      border-radius: 20px;
-      background: rgba(27, 14, 35, 0.97);
-      border: 1px solid rgba(255,255,255,0.10);
-      box-shadow: 0 15px 50px rgba(0,0,0,0.45);
-      z-index: 10;
-    }
-
-    .emoji-grid {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      gap: 4px;
-    }
-
-    .emoji-grid button {
-      border: none;
-      background: transparent;
-      font-size: 23px;
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 8px;
-    }
-
-    .emoji-grid button:hover {
-      background: rgba(255,255,255,0.08);
-    }
-
-    /* ================= EMPTY ================= */
-
-    .empty-chat {
-      text-align: center;
-      margin: 30vh auto 0;
-      color: #9f92a4;
-      font-size: 14px;
-    }
-
-    .empty-chat .heart {
-      font-size: 38px;
-      margin-bottom: 10px;
-      opacity: 0.75;
-    }
-
-    /* ================= MOBILE ================= */
-
-    @media (max-width: 600px) {
-      .chat-app {
-        max-width: none;
-      }
-
-      .chat-header {
-        min-height: 66px;
-        padding: 8px 9px;
-      }
-
-      .avatar {
-        width: 43px;
-        height: 43px;
-        font-size: 20px;
-      }
-
-      .header-info h2 {
-        font-size: 15px;
-      }
-
-      #statusText {
-        font-size: 11px;
-      }
-
-      .header-actions {
-        gap: 2px;
-      }
-
-      .icon-btn {
-        width: 34px;
-        height: 34px;
-        font-size: 15px;
-      }
-
-      #messages {
-        padding: 15px 9px 12px;
-      }
-
-      .bubble {
-        max-width: 82%;
-        font-size: 14.5px;
-      }
-
-      .input-area {
-        padding: 8px 7px 9px;
-      }
-
-      .input-wrap {
-        padding-left: 5px;
-      }
-
-      .emoji-btn,
-      .gif-btn {
-        width: 31px;
-      }
-
-      #sendButton {
-        width: 43px;
-        height: 43px;
-      }
-    }
-
-    @media (max-width: 380px) {
-      .header-actions .gif-head {
-        display: none;
-      }
-
-      .header-actions .video-head {
-        display: none;
-      }
-
-      .bubble {
-        max-width: 87%;
-      }
-
-      .emoji-grid {
-        grid-template-columns: repeat(7, 1fr);
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#075e54">
+<title>Private Chat</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+
+/* LOGIN */
+#loginScreen{
+  position:fixed;inset:0;display:flex;align-items:center;
+  justify-content:center;padding:20px;
+  background:linear-gradient(145deg,#075e54,#111b21)
+}
+.loginCard{
+  width:100%;max-width:380px;background:#fff;border-radius:18px;
+  padding:30px 23px;text-align:center;box-shadow:0 15px 50px #0005
+}
+.loginLogo{font-size:45px}
+.loginCard h1{color:#075e54;margin:12px 0 5px}
+.loginCard p{color:#667781;font-size:14px;margin-bottom:25px}
+.loginCard input{
+  width:100%;padding:14px;margin-bottom:12px;border:1px solid #ddd;
+  border-radius:9px;outline:none
+}
+.loginCard input:focus{border-color:#00a884}
+.loginCard button{
+  width:100%;border:0;background:#00a884;color:white;
+  padding:14px;border-radius:9px;font-weight:bold
+}
+#error{color:#d32f2f;font-size:13px;margin-top:12px}
+
+/* APP */
+#chatScreen{
+  position:fixed;top:0;left:0;width:100%;
+  height:100dvh;display:flex;justify-content:center;
+  background:#111b21;overflow:hidden
+}
+.chat{
+  width:100%;max-width:950px;height:100%;
+  display:flex;flex-direction:column;overflow:hidden;
+  background:#efeae2
+}
+
+/* FIXED HEADER */
+.header{
+  flex:0 0 62px;height:62px;background:#075e54;
+  display:flex;align-items:center;padding:0 10px;
+  color:white;gap:10px;z-index:5
+}
+.avatar{
+  width:41px;height:41px;border-radius:50%;
+  background:#dfe9e5;color:#075e54;display:flex;
+  align-items:center;justify-content:center;font-size:23px;
+  flex-shrink:0
+}
+.contact{flex:1;min-width:0}
+.contactName{
+  font-weight:bold;font-size:17px;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis
+}
+#status{font-size:12px;opacity:.85;margin-top:4px}
+.headerButton{
+  border:0;background:transparent;color:white;
+  font-size:21px;padding:6px;flex-shrink:0
+}
+
+/* CHAT BACKGROUND */
+.messages{
+  flex:1;min-height:0;overflow-y:auto;
+  overscroll-behavior:contain;
+  padding:15px 12px;
+  background-color:#efeae2;
+  background-image:
+    radial-gradient(#b8b0a536 1px,transparent 1px),
+    radial-gradient(#b8b0a526 1px,transparent 1px);
+  background-size:38px 38px,55px 55px;
+  background-position:0 0,18px 23px;
+  scrollbar-width:thin
+}
+.date{
+  width:max-content;max-width:90%;
+  margin:10px auto 17px;padding:7px 12px;
+  background:#fffdf4;color:#54656f;
+  font-size:12px;border-radius:8px;
+  box-shadow:0 1px 2px #0002
+}
+.msgRow{display:flex;margin:4px 0}
+.msgRow.mine{justify-content:flex-end}
+.msgRow.theirs{justify-content:flex-start}
+.bubble{
+  max-width:82%;min-width:75px;padding:7px 8px 5px;
+  border-radius:9px;box-shadow:0 1px 1px #0002;
+  font-size:14.5px;line-height:1.42;overflow-wrap:anywhere
+}
+.mine .bubble{background:#d9fdd3;border-top-right-radius:2px}
+.theirs .bubble{background:white;border-top-left-radius:2px}
+.msgText{white-space:pre-wrap}
+.meta{
+  display:flex;justify-content:flex-end;align-items:center;
+  gap:4px;font-size:10px;color:#667781;
+  margin-top:3px;min-height:12px
+}
+.ticks{font-size:13px;letter-spacing:-3px;padding-right:3px}
+.ticks.read{color:#53bdeb}
+.empty{text-align:center;color:#667781;margin:30vh 0;font-size:13px}
+
+/* TYPING */
+#typingBubble{
+  display:none;width:62px;background:white;
+  padding:13px;margin:7px 0;border-radius:10px;
+  box-shadow:0 1px 2px #0002
+}
+.dots{display:flex;gap:4px}
+.dots span{
+  width:7px;height:7px;border-radius:50%;background:#8696a0;
+  animation:jump 1s infinite
+}
+.dots span:nth-child(2){animation-delay:.15s}
+.dots span:nth-child(3){animation-delay:.3s}
+@keyframes jump{
+  0%,60%,100%{transform:translateY(0)}
+  30%{transform:translateY(-5px)}
+}
+
+/* INPUT STAYS ABOVE KEYBOARD */
+.composer{
+  flex:0 0 auto;display:flex;align-items:flex-end;
+  gap:7px;padding:7px 8px;
+  padding-bottom:max(7px,env(safe-area-inset-bottom));
+  background:#f0f2f5
+}
+.inputBox{
+  flex:1;min-width:0;display:flex;align-items:center;
+  background:white;border-radius:25px;padding:3px 7px
+}
+.inputIcon{
+  background:none;border:0;color:#8696a0;
+  font-size:23px;padding:8px
+}
+#messageInput{
+  flex:1;min-width:0;border:0;outline:0;
+  padding:11px 4px;font-size:15px;background:transparent
+}
+.send{
+  border:0;background:#00a884;color:white;
+  width:45px;height:45px;border-radius:50%;
+  font-size:21px;flex-shrink:0
+}
+#emojiPanel{
+  display:none;background:#fff;padding:12px;
+  border-top:1px solid #ddd;max-height:175px;overflow-y:auto
+}
+.emojiGrid{display:grid;grid-template-columns:repeat(8,1fr);gap:7px}
+.emojiGrid button{background:none;border:0;font-size:24px}
+@media(min-width:951px){
+  .chat{box-shadow:0 0 35px #0005}
+}
+@media(max-width:360px){
+  .header{gap:6px;padding:0 7px}
+  .headerButton{font-size:19px;padding:4px}
+  .bubble{max-width:88%}
+}
+</style>
 </head>
-
 <body>
 
-  <!-- ================= LOGIN ================= -->
+<section id="loginScreen">
+  <div class="loginCard">
+    <div class="loginLogo">💚</div>
+    <h1>Private Chat</h1>
+    <p>Just you and your special person ❤️</p>
+    <input id="email" type="email" placeholder="Email" autocomplete="email">
+    <input id="password" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="loginBtn">Login</button>
+    <div id="error"></div>
+  </div>
+</section>
 
-  <section id="loginScreen">
-    <div class="login-card">
-
-      <div class="login-heart">❤️</div>
-
-      <h1>Private Chat</h1>
-      <p>Just two people. One private conversation.</p>
-
-      <input
-        type="email"
-        id="emailInput"
-        placeholder="Email address"
-        autocomplete="email"
-      >
-
-      <input
-        type="password"
-        id="passwordInput"
-        placeholder="Password"
-        autocomplete="current-password"
-      >
-
-      <button id="loginButton">Enter Private Chat 💜</button>
-
-      <div id="loginError"></div>
-
-    </div>
-  </section>
-
-
-  <!-- ================= CHAT ================= -->
-
-  <section id="chatScreen">
-
-    <div class="chat-app">
-
-      <!-- HEADER -->
-      <header class="chat-header">
-
-        <div class="avatar">❤️</div>
-
-        <div class="header-info">
-          <h2>Private Chat</h2>
-          <div id="statusText">Offline</div>
-        </div>
-
-        <div class="header-actions">
-
-          <button
-            class="icon-btn gif-head"
-            id="gifHeaderButton"
-            title="GIF"
-          >GIF</button>
-
-          <button
-            class="icon-btn video-head"
-            id="videoButton"
-            title="Video Call"
-          >📹</button>
-
-          <button
-            class="icon-btn"
-            id="clearChatButton"
-            title="Clear complete chat"
-          >🗑️</button>
-
-          <button
-            class="icon-btn logout-btn"
-            id="logoutButton"
-            title="Logout"
-          >↪</button>
-
-        </div>
-
-      </header>
-
-
-      <!-- MESSAGES -->
-      <main id="messages">
-
-        <div class="typing-bubble" id="typingBubble">
-          <div class="typing-dots">
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-        </div>
-
-      </main>
-
-
-      <!-- EMOJI PANEL -->
-      <div id="emojiPanel">
-        <div class="emoji-grid">
-
-          <button>😀</button>
-          <button>😂</button>
-          <button>🤣</button>
-          <button>😊</button>
-          <button>😍</button>
-          <button>🥰</button>
-          <button>😘</button>
-          <button>😉</button>
-
-          <button>😏</button>
-          <button>😌</button>
-          <button>😜</button>
-          <button>🤭</button>
-          <button>🫣</button>
-          <button>😈</button>
-          <button>🔥</button>
-          <button>❤️</button>
-
-          <button>💕</button>
-          <button>💗</button>
-          <button>💋</button>
-          <button>🥺</button>
-          <button>😚</button>
-          <button>😻</button>
-          <button>🫶</button>
-          <button>💞</button>
-
-          <button>✨</button>
-          <button>💫</button>
-          <button>🌹</button>
-          <button>😘</button>
-          <button>🙈</button>
-          <button>😉</button>
-          <button>😎</button>
-          <button>❤️‍🔥</button>
-
-        </div>
+<section id="chatScreen" class="hidden">
+  <div class="chat" id="chat">
+    <header class="header">
+      <div class="avatar">❤️</div>
+      <div class="contact">
+        <div class="contactName">Private Chat</div>
+        <div id="status">Connecting...</div>
       </div>
+      <button class="headerButton" id="clearBtn" title="Clear chat">⋮</button>
+      <button class="headerButton" id="logoutBtn" title="Logout">↪</button>
+    </header>
 
+    <main class="messages" id="messages">
+      <div id="typingBubble">
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+    </main>
 
-      <!-- INPUT -->
-      <footer class="input-area">
-
-        <div class="input-wrap">
-
-          <button
-            class="emoji-btn"
-            id="emojiButton"
-            title="Emoji"
-          >😊</button>
-
-          <input
-            type="text"
-            id="messageInput"
-            placeholder="Type a message..."
-            autocomplete="off"
-          >
-
-          <button
-            class="gif-btn"
-            id="gifButton"
-            title="GIF"
-          >GIF</button>
-
-        </div>
-
-        <button id="sendButton" title="Send">➤</button>
-
-      </footer>
-
+    <div id="emojiPanel">
+      <div class="emojiGrid" id="emojiGrid"></div>
     </div>
 
-  </section>
+    <footer class="composer">
+      <div class="inputBox">
+        <button class="inputIcon" id="emojiBtn">☺</button>
+        <input id="messageInput" type="text"
+          placeholder="Message" autocomplete="off">
+      </div>
+      <button class="send" id="sendBtn">➤</button>
+    </footer>
+  </div>
+</section>
 
+<script type="module">
+import {initializeApp}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-  <!-- ================= FIREBASE ================= -->
+import {
+  getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  <script type="module">
+import {
+  getDatabase,ref,push,onChildAdded,onChildChanged,
+  onChildRemoved,onValue,set,update,remove,onDisconnect
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+const firebaseConfig={
+  apiKey:"AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
+  authDomain:"private-chat-4c4a8.firebaseapp.com",
+  databaseURL:"https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId:"private-chat-4c4a8",
+  storageBucket:"private-chat-4c4a8.firebasestorage.app",
+  messagingSenderId:"333493856166",
+  appId:"1:333493856166:web:a753d6dfc6db986c8b9167"
+};
 
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
 
-    import {
-      getDatabase,
-      ref,
-      push,
-      onChildAdded,
-      onChildChanged,
-      onValue,
-      set,
-      update,
-      remove,
-      onDisconnect
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+const USER1="4kQ8bajQmPgYzhej526WHTofvWW2";
+const USER2="4S0l5VRvoPQdQ1qE8XaypIZprD33";
 
+const $=id=>document.getElementById(id);
+const messages=$("messages");
+const typingBubble=$("typingBubble");
+const input=$("messageInput");
 
-    /* ================= FIREBASE CONFIG ================= */
+let user=null;
+let unsub=[];
+let typingTimer=null;
+let otherPresence=null;
+let otherTyping=false;
+let dates=new Set();
+let messageCount=0;
+let initialLoading=false;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
-      authDomain: "private-chat-4c4a8.firebaseapp.com",
-      databaseURL: "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "private-chat-4c4a8",
-      storageBucket: "private-chat-4c4a8.firebasestorage.app",
-      messagingSenderId: "333493856166",
-      appId: "1:333493856166:web:a753d6dfc6db986c8b9167"
-    };
+const otherUid=()=>user?.uid===USER1?USER2:USER1;
 
-    const app = initializeApp(firebaseConfig);
+function dateKey(ts){
+  const d=new Date(ts);
+  return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+}
 
-    const auth = getAuth(app);
-    const database = getDatabase(app);
+function dateLabel(ts){
+  const now=new Date();
+  const yesterday=new Date();
+  yesterday.setDate(now.getDate()-1);
+  if(dateKey(ts)===dateKey(now))return "Today";
+  if(dateKey(ts)===dateKey(yesterday))return "Yesterday";
+  return new Date(ts).toLocaleDateString("en-IN",{
+    day:"numeric",month:"long",year:"numeric"
+  });
+}
 
+function time(ts){
+  return new Date(ts).toLocaleTimeString("en-IN",{
+    hour:"numeric",minute:"2-digit"
+  });
+}
 
-    /* ================= USERS ================= */
+function nearBottom(){
+  return messages.scrollHeight-messages.scrollTop-messages.clientHeight<130;
+}
 
-    const USER_1 = "4kQ8bajQmPgYzhej526WHTofvWW2";
-    const USER_2 = "4S0l5VRvoPQdQ1qE8XaypIZprD33";
+function scrollBottom(){
+  messages.scrollTop=messages.scrollHeight;
+}
 
+function refreshStatus(){
+  if(otherTyping){
+    $("status").textContent="typing...";
+    return;
+  }
+  if(otherPresence?.online){
+    $("status").textContent="online";
+  }else if(otherPresence?.lastSeen){
+    $("status").textContent=
+      "last seen "+dateLabel(otherPresence.lastSeen).toLowerCase()+
+      " at "+time(otherPresence.lastSeen);
+  }else{
+    $("status").textContent="offline";
+  }
+}
 
-    /* ================= DOM ================= */
+function resetMessages(){
+  messages.replaceChildren(typingBubble);
+  typingBubble.style.display="none";
+  dates.clear();
+  messageCount=0;
+}
 
-    const loginScreen = document.getElementById("loginScreen");
-    const chatScreen = document.getElementById("chatScreen");
+function addDate(ts){
+  const key=dateKey(ts);
+  if(dates.has(key))return;
+  dates.add(key);
+  const el=document.createElement("div");
+  el.className="date";
+  el.textContent=dateLabel(ts);
+  messages.insertBefore(el,typingBubble);
+}
 
-    const emailInput = document.getElementById("emailInput");
-    const passwordInput = document.getElementById("passwordInput");
+function renderMessage(key,data){
+  if(!user||!data||typeof data.text!=="string")return;
+  if(document.getElementById("msg-"+key))return;
 
-    const loginButton = document.getElementById("loginButton");
-    const loginError = document.getElementById("loginError");
+  const stick=initialLoading||nearBottom();
+  const empty=messages.querySelector(".empty");
+  if(empty)empty.remove();
 
-    const logoutButton = document.getElementById("logoutButton");
-    const clearChatButton = document.getElementById("clearChatButton");
+  addDate(data.timestamp||Date.now());
 
-    const messages = document.getElementById("messages");
-    const messageInput = document.getElementById("messageInput");
-    const sendButton = document.getElementById("sendButton");
+  const mine=data.sender===user.uid;
+  const row=document.createElement("div");
+  row.className="msgRow "+(mine?"mine":"theirs");
+  row.id="msg-"+key;
 
-    const statusText = document.getElementById("statusText");
+  const bubble=document.createElement("div");
+  bubble.className="bubble";
 
-    const typingBubble = document.getElementById("typingBubble");
+  const text=document.createElement("div");
+  text.className="msgText";
+  text.textContent=data.text;
 
-    const emojiButton = document.getElementById("emojiButton");
-    const emojiPanel = document.getElementById("emojiPanel");
+  const meta=document.createElement("div");
+  meta.className="meta";
 
-    const gifButton = document.getElementById("gifButton");
-    const gifHeaderButton = document.getElementById("gifHeaderButton");
+  const clock=document.createElement("span");
+  clock.textContent=time(data.timestamp||Date.now());
+  meta.appendChild(clock);
 
-    const videoButton = document.getElementById("videoButton");
+  if(mine){
+    const ticks=document.createElement("span");
+    ticks.className="ticks"+(data.read?" read":"");
+    ticks.textContent=data.read?"✓✓":"✓";
+    meta.appendChild(ticks);
+  }
 
+  bubble.append(text,meta);
+  row.appendChild(bubble);
+  messages.insertBefore(row,typingBubble);
+  messageCount++;
 
-    /* ================= STATE ================= */
+  if(stick)requestAnimationFrame(scrollBottom);
 
-    let currentUser = null;
+  if(!mine&&!data.read){
+    update(ref(db,"messages/"+key),{read:true})
+      .catch(console.error);
+  }
+}
 
-    let stopMessageListener = null;
-    let stopChangedListener = null;
-    let stopPresenceListener = null;
-    let stopTypingListener = null;
+function updateTicks(key,data){
+  const row=document.getElementById("msg-"+key);
+  const ticks=row?.querySelector(".ticks");
+  if(ticks){
+    ticks.textContent=data.read?"✓✓":"✓";
+    ticks.classList.toggle("read",!!data.read);
+  }
+}
 
-    let typingTimer = null;
+function showEmpty(){
+  if(messageCount>0||messages.querySelector(".empty"))return;
+  const empty=document.createElement("div");
+  empty.className="empty";
+  empty.textContent="🔒 Messages are private to your chat";
+  messages.insertBefore(empty,typingBubble);
+}
 
-    let otherUserOnline = false;
-    let otherUserLastSeen = null;
+function listenMessages(){
+  initialLoading=true;
+  const msgRef=ref(db,"messages");
 
-    let knownDates = new Set();
+  unsub.push(onChildAdded(msgRef,s=>{
+    if(s.key?.startsWith("__"))return;
+    renderMessage(s.key,s.val());
+  }));
 
+  unsub.push(onChildChanged(msgRef,s=>{
+    if(s.key?.startsWith("__"))return;
+    updateTicks(s.key,s.val());
+  }));
 
-    /* ================= HELPERS ================= */
-
-    function getOtherUserId() {
-      if (!currentUser) return null;
-
-      return currentUser.uid === USER_1
-        ? USER_2
-        : USER_1;
+  unsub.push(onChildRemoved(msgRef,s=>{
+    if(s.key?.startsWith("__"))return;
+    document.getElementById("msg-"+s.key)?.remove();
+    messageCount=Math.max(0,messageCount-1);
+    if(messageCount===0){
+      messages.querySelectorAll(".date").forEach(e=>e.remove());
+      dates.clear();
+      showEmpty();
     }
+  }));
 
-
-    function formatTime(timestamp) {
-
-      if (!timestamp) return "";
-
-      const date = new Date(timestamp);
-
-      return date.toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      });
+  unsub.push(onValue(msgRef,()=>{
+    if(initialLoading){
+      initialLoading=false;
+      showEmpty();
+      requestAnimationFrame(scrollBottom);
     }
+  },{onlyOnce:true}));
+}
 
-
-    function getDateKey(timestamp) {
-
-      const date = new Date(timestamp);
-
-      return [
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate()
-      ].join("-");
-    }
-
-
-    function getDateLabel(timestamp) {
-
-      const date = new Date(timestamp);
-
-      const now = new Date();
-
-      const todayKey = getDateKey(now);
-
-      const yesterday = new Date();
-      yesterday.setDate(now.getDate() - 1);
-
-      const yesterdayKey = getDateKey(yesterday);
-
-      const key = getDateKey(timestamp);
-
-      if (key === todayKey) {
-        return "Today";
-      }
-
-      if (key === yesterdayKey) {
-        return "Yesterday";
-      }
-
-      return date.toLocaleDateString([], {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-      });
-    }
-
-
-    function formatLastSeen(timestamp) {
-
-      if (!timestamp) {
-        return "Offline";
-      }
-
-      const date = new Date(timestamp);
-
-      const now = new Date();
-
-      const diff = Math.floor(
-        (now.getTime() - date.getTime()) / 1000
-      );
-
-      if (diff < 60) {
-        return "last seen just now";
-      }
-
-      if (diff < 3600) {
-        const minutes = Math.floor(diff / 60);
-        return `last seen ${minutes} min ago`;
-      }
-
-      if (getDateKey(timestamp) === getDateKey(now)) {
-        return "last seen today at " + formatTime(timestamp);
-      }
-
-      return "last seen " + date.toLocaleDateString([], {
-        day: "numeric",
-        month: "short"
-      }) + " at " + formatTime(timestamp);
-    }
-
-
-    function scrollToBottom() {
-
-      setTimeout(() => {
-        messages.scrollTop = messages.scrollHeight;
-      }, 30);
-    }
-
-
-    function setStatus(text, className = "") {
-
-      statusText.textContent = text;
-      statusText.className = className;
-    }
-
-
-    /* ================= LOGIN ================= */
-
-    loginButton.addEventListener("click", async () => {
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      if (!email || !password) {
-        loginError.textContent = "Please enter email and password.";
-        return;
-      }
-
-      loginButton.disabled = true;
-      loginButton.textContent = "Entering...";
-
-      loginError.textContent = "";
-
-      try {
-
-        await signInWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
-
-      } catch (error) {
-
-        console.error(error);
-
-        loginError.textContent =
-          "Login failed. Please check your email and password.";
-
-      }
-
-      loginButton.disabled = false;
-      loginButton.textContent = "Enter Private Chat 💜";
+async function setTyping(value){
+  if(!user)return;
+  try{
+    await set(ref(db,"messages/__typing__/"+user.uid),{
+      typing:value,timestamp:Date.now()
     });
+  }catch(e){console.error(e)}
+}
 
+function listenPresence(){
+  const myRef=ref(db,"messages/__presence__/"+user.uid);
+  const theirRef=ref(db,"messages/__presence__/"+otherUid());
+  const myTyping=ref(db,"messages/__typing__/"+user.uid);
+  const theirTyping=ref(db,"messages/__typing__/"+otherUid());
 
-    passwordInput.addEventListener("keydown", (event) => {
+  // Re-register presence whenever Firebase reconnects.
+  unsub.push(onValue(ref(db,".info/connected"),async s=>{
+    if(!s.val()||!user)return;
+    try{
+      await onDisconnect(myRef).set({
+        online:false,lastSeen:Date.now()
+      });
+      await onDisconnect(myTyping).set({
+        typing:false,timestamp:Date.now()
+      });
+      await set(myRef,{online:true,lastSeen:Date.now()});
+    }catch(e){console.error(e)}
+  }));
 
-      if (event.key === "Enter") {
-        loginButton.click();
-      }
+  unsub.push(onValue(theirRef,s=>{
+    otherPresence=s.val();
+    refreshStatus();
+  }));
 
+  unsub.push(onValue(theirTyping,s=>{
+    const d=s.val();
+    otherTyping=!!(d?.typing&&Date.now()-d.timestamp<10000);
+    typingBubble.style.display=otherTyping?"block":"none";
+    refreshStatus();
+    if(otherTyping&&nearBottom())scrollBottom();
+  }));
+}
+
+async function send(){
+  if(!user)return;
+  const text=input.value.trim();
+  if(!text)return;
+
+  input.value="";
+  clearTimeout(typingTimer);
+  setTyping(false);
+
+  try{
+    await push(ref(db,"messages"),{
+      type:"text",text,sender:user.uid,
+      email:user.email||"",
+      timestamp:Date.now(),read:false
     });
+    requestAnimationFrame(scrollBottom);
+  }catch(e){
+    input.value=text;
+    alert("Message send nahi hua. Dobara try karo.");
+    console.error(e);
+  }
+}
 
+$("sendBtn").onclick=send;
+input.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    e.preventDefault();
+    send();
+  }
+});
 
-    /* ================= PRESENCE ================= */
+input.addEventListener("input",()=>{
+  clearTimeout(typingTimer);
+  if(!user)return;
+  if(!input.value.trim()){
+    setTyping(false);
+    return;
+  }
+  setTyping(true);
+  typingTimer=setTimeout(()=>setTyping(false),1500);
+});
 
-    async function startPresence() {
+$("loginBtn").onclick=async()=>{
+  const email=$("email").value.trim();
+  const password=$("password").value;
+  if(!email||!password){
+    $("error").textContent="Enter email and password.";
+    return;
+  }
+  $("loginBtn").disabled=true;
+  $("error").textContent="";
+  try{
+    await signInWithEmailAndPassword(auth,email,password);
+  }catch(e){
+    console.error(e);
+    $("error").textContent="Login failed. Check email and password.";
+  }finally{
+    $("loginBtn").disabled=false;
+  }
+};
 
-      if (!currentUser) return;
+$("password").addEventListener("keydown",e=>{
+  if(e.key==="Enter")$("loginBtn").click();
+});
 
-      const uid = currentUser.uid;
-
-      const presenceRef = ref(
-        database,
-        "messages/__presence__/" + uid
-      );
-
-      await set(presenceRef, {
-        online: true,
-        lastSeen: Date.now()
+$("logoutBtn").onclick=async()=>{
+  if(!confirm("Logout?"))return;
+  try{
+    await setTyping(false);
+    if(user){
+      await set(ref(db,"messages/__presence__/"+user.uid),{
+        online:false,lastSeen:Date.now()
       });
-
-      onDisconnect(presenceRef).set({
-        online: false,
-        lastSeen: Date.now()
-      });
     }
+    await signOut(auth);
+  }catch(e){alert("Logout failed.");console.error(e)}
+};
 
-
-    function startOtherUserPresence() {
-
-      if (!currentUser) return;
-
-      const otherUid = getOtherUserId();
-
-      const presenceRef = ref(
-        database,
-        "messages/__presence__/" + otherUid
-      );
-
-      if (stopPresenceListener) {
-        stopPresenceListener();
-      }
-
-      stopPresenceListener = onValue(
-        presenceRef,
-        (snapshot) => {
-
-          const data = snapshot.val();
-
-          otherUserOnline = !!(data && data.online);
-
-          otherUserLastSeen =
-            data && data.lastSeen
-              ? data.lastSeen
-              : null;
-
-          restorePresenceText();
-        }
-      );
-    }
-
-
-    function restorePresenceText() {
-
-      if (!currentUser) return;
-
-      if (typingBubble.style.display === "block") {
-        setStatus("typing...", "typing");
-        return;
-      }
-
-      if (otherUserOnline) {
-
-        setStatus("online", "online");
-
-      } else {
-
-        setStatus(
-          formatLastSeen(otherUserLastSeen),
-          ""
-        );
-      }
-    }
-
-
-    /* ================= TYPING ================= */
-
-    async function setTyping(value) {
-
-      if (!currentUser) return;
-
-      const typingRef = ref(
-        database,
-        "messages/__typing__/" + currentUser.uid
-      );
-
-      await set(typingRef, {
-        typing: value,
-        timestamp: Date.now()
-      });
-
-      if (value) {
-
-        onDisconnect(typingRef).set({
-          typing: false,
-          timestamp: Date.now()
-        });
-
-      }
-    }
-
-
-    function startTypingListener() {
-
-      if (!currentUser) return;
-
-      const otherUid = getOtherUserId();
-
-      const typingRef = ref(
-        database,
-        "messages/__typing__/" + otherUid
-      );
-
-      if (stopTypingListener) {
-        stopTypingListener();
-      }
-
-      stopTypingListener = onValue(
-        typingRef,
-        (snapshot) => {
-
-          const data = snapshot.val();
-
-          const isTyping =
-            data &&
-            data.typing === true;
-
-          if (isTyping) {
-
-            typingBubble.style.display = "block";
-
-            setStatus(
-              "typing...",
-              "typing"
-            );
-
-            scrollToBottom();
-
-          } else {
-
-            typingBubble.style.display = "none";
-
-            restorePresenceText();
-          }
-
-        }
-      );
-    }
-
-
-    messageInput.addEventListener("input", () => {
-
-      if (!currentUser) return;
-
-      const hasText =
-        messageInput.value.trim().length > 0;
-
-      if (!hasText) {
-
-        clearTimeout(typingTimer);
-        setTyping(false);
-        return;
-      }
-
-      setTyping(true);
-
-      clearTimeout(typingTimer);
-
-      typingTimer = setTimeout(() => {
-        setTyping(false);
-      }, 1200);
+$("clearBtn").onclick=async()=>{
+  if(!user)return;
+  if(!confirm("Delete complete chat history for BOTH users? This cannot be undone."))return;
+  try{
+    // Preserve the special presence and typing nodes.
+    const {get}=await import(
+      "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js"
+    );
+    const snapshot=await get(ref(db,"messages"));
+    const changes={};
+    snapshot.forEach(child=>{
+      if(!child.key.startsWith("__"))changes[child.key]=null;
     });
-
-
-    /* ================= MESSAGES ================= */
-
-    function createDateSeparator(timestamp) {
-
-      const dateKey = getDateKey(timestamp);
-
-      if (knownDates.has(dateKey)) {
-        return;
-      }
-
-      knownDates.add(dateKey);
-
-      const separator =
-        document.createElement("div");
-
-      separator.className = "date-separator";
-
-      separator.dataset.dateKey = dateKey;
-
-      separator.textContent =
-        getDateLabel(timestamp);
-
-      messages.insertBefore(
-        separator,
-        typingBubble
-      );
+    if(Object.keys(changes).length){
+      await update(ref(db,"messages"),changes);
     }
-
-
-    function renderMessage(key, data) {
-
-      if (!data || !data.text) return;
-
-      const existing =
-        document.querySelector(
-          `[data-message-id="${key}"]`
-        );
-
-      if (existing) {
-        updateMessageUI(existing, data);
-        return;
-      }
-
-      createDateSeparator(data.timestamp);
-
-      const row =
-        document.createElement("div");
-
-      const isMine =
-        data.sender === currentUser.uid;
-
-      row.className =
-        "message-row " +
-        (isMine ? "mine" : "theirs");
-
-      row.dataset.messageId = key;
-
-      const bubble =
-        document.createElement("div");
-
-      bubble.className = "bubble";
-
-      const text =
-        document.createElement("div");
-
-      text.className = "message-text";
-
-      text.textContent = data.text;
-
-      const meta =
-        document.createElement("div");
-
-      meta.className = "message-meta";
-
-      const time =
-        document.createElement("span");
-
-      time.textContent =
-        formatTime(data.timestamp);
-
-      meta.appendChild(time);
-
-      if (isMine) {
-
-        const ticks =
-          document.createElement("span");
-
-        ticks.className =
-          "ticks " +
-          (data.read ? "read" : "");
-
-        ticks.textContent =
-          data.read ? "✓✓" : "✓";
-
-        meta.appendChild(ticks);
-      }
-
-      bubble.appendChild(text);
-      bubble.appendChild(meta);
-
-      row.appendChild(bubble);
-
-      messages.insertBefore(
-        row,
-        typingBubble
-      );
-
-      scrollToBottom();
-
-      /* Recipient has received the message */
-      if (
-        !isMine &&
-        data.read !== true
-      ) {
-
-        update(
-          ref(
-            database,
-            "messages/" + key
-          ),
-          {
-            read: true
-          }
-        ).catch(error => {
-          console.error(error);
-        });
-      }
-    }
-
-
-    function updateMessageUI(row, data) {
-
-      if (!currentUser) return;
-
-      if (data.sender !== currentUser.uid) {
-        return;
-      }
-
-      const ticks =
-        row.querySelector(".ticks");
-
-      if (!ticks) return;
-
-      if (data.read) {
-
-        ticks.textContent = "✓✓";
-
-        ticks.classList.add("read");
-
-      } else {
-
-        ticks.textContent = "✓";
-
-        ticks.classList.remove("read");
-      }
-    }
-
-
-    function startMessages() {
-
-      if (!currentUser) return;
-
-      const messagesRef =
-        ref(database, "messages");
-
-      if (stopMessageListener) {
-        stopMessageListener();
-      }
-
-      if (stopChangedListener) {
-        stopChangedListener();
-      }
-
-      stopMessageListener =
-        onChildAdded(
-          messagesRef,
-          (snapshot) => {
-
-            const key = snapshot.key;
-
-            const data = snapshot.val();
-
-            if (
-              key === "__presence__" ||
-              key === "__typing__"
-            ) {
-              return;
-            }
-
-            renderMessage(key, data);
-          }
-        );
-
-
-      stopChangedListener =
-        onChildChanged(
-          messagesRef,
-          (snapshot) => {
-
-            const key = snapshot.key;
-
-            const data = snapshot.val();
-
-            if (
-              key === "__presence__" ||
-              key === "__typing__"
-            ) {
-              return;
-            }
-
-            const row =
-              document.querySelector(
-                `[data-message-id="${key}"]`
-              );
-
-            if (row) {
-              updateMessageUI(row, data);
-            }
-          }
-        );
-    }
-
-
-    /* ================= SEND ================= */
-
-    async function sendMessage() {
-
-      if (!currentUser) return;
-
-      const text =
-        messageInput.value.trim();
-
-      if (!text) return;
-
-      try {
-
-        await push(
-          ref(database, "messages"),
-          {
-            type: "text",
-            text: text,
-            sender: currentUser.uid,
-            email: currentUser.email || "",
-            timestamp: Date.now(),
-            read: false
-          }
-        );
-
-        messageInput.value = "";
-
-        clearTimeout(typingTimer);
-
-        await setTyping(false);
-
-        emojiPanel.style.display = "none";
-
-        messageInput.focus();
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "Message send nahi hua. Please try again."
-        );
-      }
-    }
-
-
-    sendButton.addEventListener(
-      "click",
-      sendMessage
-    );
-
-
-    messageInput.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (
-          event.key === "Enter" &&
-          !event.shiftKey
-        ) {
-
-          event.preventDefault();
-
-          sendMessage();
-        }
-
-      }
-    );
-
-
-    /* ================= EMOJI ================= */
-
-    emojiButton.addEventListener(
-      "click",
-      (event) => {
-
-        event.stopPropagation();
-
-        emojiPanel.style.display =
-          emojiPanel.style.display === "block"
-            ? "none"
-            : "block";
-      }
-    );
-
-
-    document
-      .querySelectorAll(".emoji-grid button")
-      .forEach(button => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            messageInput.value +=
-              button.textContent;
-
-            messageInput.focus();
-
-            messageInput.dispatchEvent(
-              new Event("input")
-            );
-          }
-        );
-
-      });
-
-
-    document.addEventListener(
-      "click",
-      (event) => {
-
-        if (
-          !emojiPanel.contains(event.target) &&
-          event.target !== emojiButton
-        ) {
-
-          emojiPanel.style.display = "none";
-        }
-
-      }
-    );
-
-
-    /* ================= GIF PLACEHOLDER ================= */
-
-    function gifComingSoon() {
-
-      alert(
-        "GIF search feature baad mein add karenge. ❤️"
-      );
-    }
-
-
-    gifButton.addEventListener(
-      "click",
-      gifComingSoon
-    );
-
-    gifHeaderButton.addEventListener(
-      "click",
-      gifComingSoon
-    );
-
-
-    /* ================= VIDEO PLACEHOLDER ================= */
-
-    videoButton.addEventListener(
-      "click",
-      () => {
-
-        alert(
-          "Video call feature abhi skip kiya hai. ❤️"
-        );
-
-      }
-    );
-
-
-    /* ================= CLEAR COMPLETE CHAT ================= */
-
-    clearChatButton.addEventListener(
-      "click",
-      async () => {
-
-        if (!currentUser) return;
-
-        const confirmed =
-          confirm(
-            "⚠️ Clear complete chat?\n\n" +
-            "All messages will be permanently deleted for both users.\n\n" +
-            "This action cannot be undone."
-          );
-
-        if (!confirmed) return;
-
-        clearChatButton.disabled = true;
-
-        clearChatButton.textContent =
-          "⏳";
-
-        try {
-
-          await remove(
-            ref(database, "messages")
-          );
-
-          messages.innerHTML = "";
-
-          messages.appendChild(
-            typingBubble
-          );
-
-          typingBubble.style.display =
-            "none";
-
-          knownDates.clear();
-
-          const empty =
-            document.createElement("div");
-
-          empty.className =
-            "empty-chat";
-
-          empty.innerHTML =
-            '<div class="heart">❤️</div>' +
-            '<div>No messages yet.</div>';
-
-          messages.insertBefore(
-            empty,
-            typingBubble
-          );
-
-          await startPresence();
-
-          await setTyping(false);
-
-          alert(
-            "Complete chat history deleted."
-          );
-
-        } catch (error) {
-
-          console.error(error);
-
-          alert(
-            "Could not clear chat. Please try again."
-          );
-        }
-
-        clearChatButton.disabled = false;
-
-        clearChatButton.textContent =
-          "🗑️";
-      }
-    );
-
-
-    /* ================= LOGOUT ================= */
-
-    logoutButton.addEventListener(
-      "click",
-      async () => {
-
-        if (!currentUser) return;
-
-        const confirmed =
-          confirm(
-            "Logout from Private Chat?"
-          );
-
-        if (!confirmed) return;
-
-        try {
-
-          await setTyping(false);
-
-          await set(
-            ref(
-              database,
-              "messages/__presence__/" +
-              currentUser.uid
-            ),
-            {
-              online: false,
-              lastSeen: Date.now()
-            }
-          );
-
-          await signOut(auth);
-
-        } catch (error) {
-
-          console.error(error);
-
-        }
-
-      }
-    );
-
-
-    /* ================= AUTH STATE ================= */
-
-    onAuthStateChanged(
-      auth,
-      async (user) => {
-
-        currentUser = user;
-
-        if (user) {
-
-          if (
-            user.uid !== USER_1 &&
-            user.uid !== USER_2
-          ) {
-
-            alert(
-              "This private chat is restricted to the two authorized users."
-            );
-
-            await signOut(auth);
-
-            return;
-          }
-
-
-          loginScreen.style.display =
-            "none";
-
-          chatScreen.style.display =
-            "block";
-
-
-          /* Stop old listeners */
-
-          if (stopMessageListener) {
-            stopMessageListener();
-            stopMessageListener = null;
-          }
-
-          if (stopChangedListener) {
-            stopChangedListener();
-            stopChangedListener = null;
-          }
-
-          if (stopPresenceListener) {
-            stopPresenceListener();
-            stopPresenceListener = null;
-          }
-
-          if (stopTypingListener) {
-            stopTypingListener();
-            stopTypingListener = null;
-          }
-
-
-          /* Reset messages safely */
-
-          messages.innerHTML = "";
-
-          messages.appendChild(
-            typingBubble
-          );
-
-          typingBubble.style.display =
-            "none";
-
-          knownDates.clear();
-
-
-          /* Start systems */
-
-          await startPresence();
-
-          startOtherUserPresence();
-
-          startTypingListener();
-
-          startMessages();
-
-          messageInput.focus();
-
-        } else {
-
-          loginScreen.style.display =
-            "flex";
-
-          chatScreen.style.display =
-            "none";
-
-          messages.innerHTML = "";
-
-          messages.appendChild(
-            typingBubble
-          );
-
-          typingBubble.style.display =
-            "none";
-
-          knownDates.clear();
-
-          setStatus("Offline");
-
-        }
-
-      }
-    );
-
-  </script>
-
+    resetMessages();
+    showEmpty();
+    alert("Chat history deleted for both users.");
+  }catch(e){
+    console.error(e);
+    alert("Could not clear chat.");
+  }
+};
+
+/* EMOJI */
+const emojis=[
+"😀","😂","🤣","😊","😍","🥰","😘","😉",
+"😏","😌","😜","🤭","🫣","😈","🔥","❤️",
+"💕","💗","💋","🥺","😚","😻","🫶","💞",
+"✨","💫","🌹","🙈","😎","❤️‍🔥","😭","👍"
+];
+
+emojis.forEach(emoji=>{
+  const btn=document.createElement("button");
+  btn.textContent=emoji;
+  btn.onclick=()=>{
+    input.value+=emoji;
+    input.dispatchEvent(new Event("input"));
+    input.focus();
+  };
+  $("emojiGrid").appendChild(btn);
+});
+
+$("emojiBtn").onclick=()=>{
+  const panel=$("emojiPanel");
+  panel.style.display=panel.style.display==="block"?"none":"block";
+};
+
+/* KEYBOARD FIX */
+function adjustViewport(){
+  const viewport=window.visualViewport;
+  if(!viewport)return;
+  const height=viewport.height;
+  const offset=viewport.offsetTop;
+  const screen=$("chatScreen");
+  screen.style.height=height+"px";
+  screen.style.top=offset+"px";
+  if(document.activeElement===input){
+    requestAnimationFrame(scrollBottom);
+  }
+}
+
+if(window.visualViewport){
+  window.visualViewport.addEventListener("resize",adjustViewport);
+  window.visualViewport.addEventListener("scroll",adjustViewport);
+}
+window.addEventListener("resize",adjustViewport);
+input.addEventListener("focus",()=>{
+  setTimeout(adjustViewport,150);
+  setTimeout(adjustViewport,350);
+});
+
+onAuthStateChanged(auth,async u=>{
+  unsub.forEach(fn=>fn());
+  unsub=[];
+  clearTimeout(typingTimer);
+  user=u;
+
+  if(!u){
+    $("loginScreen").classList.remove("hidden");
+    $("chatScreen").classList.add("hidden");
+    resetMessages();
+    return;
+  }
+
+  if(u.uid!==USER1&&u.uid!==USER2){
+    await signOut(auth);
+    $("error").textContent="Unauthorized account.";
+    return;
+  }
+
+  $("loginScreen").classList.add("hidden");
+  $("chatScreen").classList.remove("hidden");
+
+  resetMessages();
+  otherPresence=null;
+  otherTyping=false;
+  refreshStatus();
+
+  listenPresence();
+  listenMessages();
+  adjustViewport();
+});
+</script>
 </body>
 </html>
