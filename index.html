@@ -16,26 +16,22 @@
       font-family: Arial, sans-serif;
       background: #f1f5f9;
       height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
 
     .chat-app {
       width: 100%;
       max-width: 500px;
       height: 100vh;
-      max-height: 800px;
-      background: white;
+      margin: auto;
+      background: #fff;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
     }
 
     .header {
       background: #075e54;
       color: white;
-      padding: 15px;
+      padding: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -66,22 +62,16 @@
 
     .status {
       font-size: 12px;
-      opacity: 0.85;
       margin-top: 3px;
+      opacity: .85;
     }
 
-    .header-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .header-btn {
+    .call-btn {
       border: none;
       background: transparent;
       color: white;
       font-size: 22px;
       cursor: pointer;
-      padding: 6px;
     }
 
     .chat {
@@ -97,20 +87,19 @@
       margin-bottom: 10px;
       border-radius: 10px;
       font-size: 15px;
-      line-height: 1.4;
       word-wrap: break-word;
-    }
-
-    .received {
-      background: white;
-      margin-right: auto;
-      border-top-left-radius: 3px;
     }
 
     .sent {
       background: #dcf8c6;
       margin-left: auto;
       border-top-right-radius: 3px;
+    }
+
+    .received {
+      background: white;
+      margin-right: auto;
+      border-top-left-radius: 3px;
     }
 
     .time {
@@ -122,22 +111,10 @@
     }
 
     .input-area {
+      display: flex;
+      gap: 8px;
       padding: 10px;
       background: #f0f0f0;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .gif-btn {
-      border: none;
-      background: white;
-      border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      cursor: pointer;
-      font-weight: bold;
-      color: #075e54;
     }
 
     .message-input {
@@ -160,11 +137,23 @@
       cursor: pointer;
     }
 
+    .gif-btn {
+      width: 42px;
+      border: none;
+      border-radius: 50%;
+      background: white;
+      color: #075e54;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
     @media (min-width: 501px) {
       .chat-app {
         height: 90vh;
+        margin-top: 5vh;
         border-radius: 12px;
-        box-shadow: 0 4px 25px rgba(0,0,0,0.15);
+        overflow: hidden;
+        box-shadow: 0 4px 25px rgba(0,0,0,.15);
       }
     }
   </style>
@@ -172,95 +161,152 @@
 
 <body>
 
-  <div class="chat-app">
+<div class="chat-app">
 
-    <header class="header">
+  <header class="header">
 
-      <div class="user-info">
-        <div class="avatar">P</div>
+    <div class="user-info">
+      <div class="avatar">P</div>
 
-        <div>
-          <div class="name">Private Chat</div>
-          <div class="status">Online</div>
-        </div>
+      <div>
+        <div class="name">Private Chat</div>
+        <div class="status" id="status">Connecting...</div>
       </div>
-
-      <div class="header-buttons">
-        <button class="header-btn" onclick="startVideoCall()">📹</button>
-      </div>
-
-    </header>
-
-    <main class="chat" id="chat">
-
-      <div class="message received">
-        Hello! 👋
-        <span class="time">Now</span>
-      </div>
-
-    </main>
-
-    <div class="input-area">
-
-      <button class="gif-btn" onclick="openGif()">GIF</button>
-
-      <input
-        type="text"
-        id="messageInput"
-        class="message-input"
-        placeholder="Type a message..."
-        autocomplete="off"
-      >
-
-      <button class="send-btn" onclick="sendMessage()">➤</button>
-
     </div>
+
+    <button class="call-btn" onclick="alert('Video call next step mein add karenge 📹')">
+      📹
+    </button>
+
+  </header>
+
+  <main class="chat" id="chat"></main>
+
+  <div class="input-area">
+
+    <button class="gif-btn" onclick="alert('GIF next step mein add karenge 😊')">
+      GIF
+    </button>
+
+    <input
+      id="messageInput"
+      class="message-input"
+      type="text"
+      placeholder="Type a message..."
+      autocomplete="off"
+    >
+
+    <button class="send-btn" id="sendBtn">
+      ➤
+    </button>
 
   </div>
 
-  <script>
-    const input = document.getElementById("messageInput");
-    const chat = document.getElementById("chat");
+</div>
 
-    function sendMessage() {
-      const text = input.value.trim();
+<script type="module">
 
-      if (!text) return;
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-      const message = document.createElement("div");
-      message.className = "message sent";
+  import {
+    getDatabase,
+    ref,
+    push,
+    onChildAdded
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-      message.innerHTML = `
-        ${escapeHtml(text)}
-        <span class="time">Now ✓</span>
-      `;
 
-      chat.appendChild(message);
+  const firebaseConfig = {
+    apiKey: "AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
+    authDomain: "private-chat-4c4a8.firebaseapp.com",
+    databaseURL: "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "private-chat-4c4a8",
+    storageBucket: "private-chat-4c4a8.firebasestorage.app",
+    messagingSenderId: "333493856166",
+    appId: "1:333493856166:web:a753d6dfc6db986c8b9167"
+  };
 
-      input.value = "";
-      chat.scrollTop = chat.scrollHeight;
-    }
 
-    input.addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        sendMessage();
-      }
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const messagesRef = ref(db, "messages");
+
+  const chat = document.getElementById("chat");
+  const input = document.getElementById("messageInput");
+  const sendBtn = document.getElementById("sendBtn");
+  const status = document.getElementById("status");
+
+
+  status.textContent = "Connected";
+
+
+  function sendMessage() {
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    push(messagesRef, {
+      text: text,
+      sender: "user",
+      timestamp: Date.now()
     });
 
-    function escapeHtml(text) {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
+    input.value = "";
+    input.focus();
+  }
+
+
+  sendBtn.addEventListener("click", sendMessage);
+
+
+  input.addEventListener("keydown", function(event) {
+
+    if (event.key === "Enter") {
+      sendMessage();
     }
 
-    function openGif() {
-      alert("GIF feature next step mein add karenge 😊");
-    }
+  });
 
-    function startVideoCall() {
-      alert("Video Call next step mein connect karenge 📹");
-    }
-  </script>
+
+  onChildAdded(messagesRef, function(snapshot) {
+
+    const data = snapshot.val();
+
+    const message = document.createElement("div");
+
+    message.className =
+      data.sender === "user"
+        ? "message sent"
+        : "message received";
+
+
+    const text = document.createElement("span");
+    text.textContent = data.text;
+
+
+    const time = document.createElement("span");
+    time.className = "time";
+
+    const date = new Date(data.timestamp);
+
+    time.textContent =
+      date.getHours().toString().padStart(2, "0") +
+      ":" +
+      date.getMinutes().toString().padStart(2, "0");
+
+
+    message.appendChild(text);
+    message.appendChild(time);
+
+    chat.appendChild(message);
+
+    chat.scrollTop = chat.scrollHeight;
+
+  });
+
+</script>
 
 </body>
 </html>
