@@ -43,7 +43,7 @@
       background: #fff;
       border-radius: 20px;
       padding: 30px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.14);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
     }
 
     .login-logo {
@@ -92,7 +92,7 @@
     }
 
     #loginButton:disabled {
-      opacity: .7;
+      opacity: 0.7;
     }
 
     #loginError {
@@ -103,7 +103,7 @@
     }
 
     /* =========================
-       CHAT APP
+       CHAT
     ========================= */
 
     #chatScreen {
@@ -114,7 +114,9 @@
       background: #efeae2;
     }
 
-    /* HEADER */
+    /* =========================
+       HEADER
+    ========================= */
 
     .chat-header {
       height: 64px;
@@ -125,8 +127,8 @@
       align-items: center;
       justify-content: space-between;
       padding: 0 12px;
-      box-shadow: 0 2px 5px rgba(0,0,0,.18);
-      z-index: 5;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+      z-index: 10;
     }
 
     .profile-area {
@@ -163,6 +165,9 @@
       font-size: 12px;
       color: #d8f8f2;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 180px;
     }
 
     .online-dot {
@@ -183,10 +188,15 @@
       margin-right: 4px;
     }
 
+    .typing-text {
+      color: #b9f5ec;
+      font-weight: bold;
+    }
+
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
     }
 
     .header-actions button {
@@ -201,15 +211,11 @@
     }
 
     .header-actions button:hover {
-      background: rgba(255,255,255,.13);
-    }
-
-    #clearChatButton:hover {
-      background: rgba(255,0,0,.25);
+      background: rgba(255, 255, 255, 0.13);
     }
 
     /* =========================
-       CHAT BACKGROUND
+       MESSAGES
     ========================= */
 
     #messages {
@@ -221,7 +227,10 @@
       gap: 3px;
       background-color: #efeae2;
       background-image:
-        radial-gradient(rgba(0,0,0,.025) 1px, transparent 1px);
+        radial-gradient(
+          rgba(0, 0, 0, 0.025) 1px,
+          transparent 1px
+        );
       background-size: 18px 18px;
     }
 
@@ -233,12 +242,8 @@
       padding: 6px 10px;
       border-radius: 8px;
       margin: 12px 0 8px;
-      box-shadow: 0 1px 1px rgba(0,0,0,.08);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
     }
-
-    /* =========================
-       MESSAGE BUBBLES
-    ========================= */
 
     .message-row {
       width: 100%;
@@ -262,7 +267,7 @@
       font-size: 15px;
       line-height: 1.4;
       word-break: break-word;
-      box-shadow: 0 1px 1px rgba(0,0,0,.08);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
     }
 
     .message.mine {
@@ -271,7 +276,7 @@
     }
 
     .message.theirs {
-      background: #fff;
+      background: #ffffff;
       border-top-left-radius: 2px;
     }
 
@@ -311,14 +316,10 @@
       color: #53bdeb;
     }
 
-    /* =========================
-       EMPTY
-    ========================= */
-
     .empty-chat {
       align-self: center;
       margin-top: 40px;
-      background: rgba(255,255,255,.75);
+      background: rgba(255, 255, 255, 0.75);
       color: #667781;
       padding: 8px 14px;
       border-radius: 8px;
@@ -326,7 +327,62 @@
     }
 
     /* =========================
-       EMOJI PICKER
+       TYPING BUBBLE
+    ========================= */
+
+    .typing-bubble {
+      display: none;
+      align-self: flex-start;
+      background: white;
+      padding: 9px 13px;
+      border-radius: 12px;
+      margin: 4px 0;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .typing-bubble.show {
+      display: block;
+    }
+
+    .typing-dots {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 15px;
+    }
+
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: #8a9aa3;
+      border-radius: 50%;
+      animation: typing 1.2s infinite;
+    }
+
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.5;
+      }
+
+      30% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+
+    /* =========================
+       EMOJI
     ========================= */
 
     .emoji-picker {
@@ -340,7 +396,7 @@
       background: white;
       border-radius: 14px;
       padding: 12px;
-      box-shadow: 0 8px 30px rgba(0,0,0,.22);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
       z-index: 20;
     }
 
@@ -368,7 +424,7 @@
     }
 
     /* =========================
-       INPUT AREA
+       INPUT
     ========================= */
 
     .input-area {
@@ -423,7 +479,7 @@
     }
 
     #sendButton:disabled {
-      opacity: .6;
+      opacity: 0.6;
     }
 
     /* =========================
@@ -449,6 +505,7 @@
 
       .online-status {
         font-size: 11px;
+        max-width: 160px;
       }
 
       .header-actions button {
@@ -474,7 +531,7 @@
       .input-button {
         width: 40px;
         height: 40px;
-        font-size: 20px;
+        font-size: 19px;
       }
 
       #messageInput {
@@ -546,8 +603,6 @@
 
   <div id="chatScreen">
 
-    <!-- HEADER -->
-
     <div class="chat-header">
 
       <div class="profile-area">
@@ -609,7 +664,9 @@
     </div>
 
 
-    <!-- MESSAGES -->
+    <!-- =========================
+         MESSAGES
+    ========================== -->
 
     <div id="messages">
 
@@ -620,14 +677,27 @@
         No messages yet.
       </div>
 
+      <div
+        id="typingBubble"
+        class="typing-bubble"
+      >
+
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
     </div>
 
 
-    <!-- INPUT -->
+    <!-- =========================
+         INPUT
+    ========================== -->
 
     <div class="input-area">
-
-      <!-- EMOJI PICKER -->
 
       <div
         class="emoji-picker"
@@ -703,10 +773,11 @@
       push,
       onChildAdded,
       onChildChanged,
+      onValue,
       set,
       update,
       remove,
-      onValue
+      onDisconnect
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
@@ -740,7 +811,7 @@
 
 
     /* =========================
-       INIT
+       INITIALIZE
     ========================== */
 
     const app =
@@ -806,6 +877,9 @@
     const onlineStatus =
       document.getElementById("onlineStatus");
 
+    const typingBubble =
+      document.getElementById("typingBubble");
+
     const gifButton =
       document.getElementById("gifButton");
 
@@ -828,7 +902,11 @@
 
     let stopPresenceListener = null;
 
+    let stopTypingListener = null;
+
     let previousDate = "";
+
+    let typingTimer = null;
 
 
     /* =========================
@@ -844,11 +922,14 @@
 
     function getOtherUserId() {
 
-      if (!currentUser) return null;
+      if (!currentUser) {
+        return null;
+      }
 
       return currentUser.uid === USER_1
         ? USER_2
         : USER_1;
+
     }
 
 
@@ -875,6 +956,7 @@
             "Please enter email and password.";
 
           return;
+
         }
 
 
@@ -963,9 +1045,22 @@
         }
 
 
+        if (stopTypingListener) {
+
+          stopTypingListener();
+
+          stopTypingListener = null;
+
+        }
+
+
         messages.innerHTML = "";
 
         previousDate = "";
+
+        typingBubble.classList.remove(
+          "show"
+        );
 
 
         if (user) {
@@ -979,10 +1074,13 @@
 
           setOnline();
 
+          setTyping(false);
 
           startMessages();
 
           startPresenceListener();
+
+          startTypingListener();
 
           messageInput.focus();
 
@@ -994,8 +1092,8 @@
           chatScreen.style.display =
             "none";
 
-          onlineStatus.textContent =
-            "Offline";
+          onlineStatus.innerHTML =
+            '<span class="offline-dot"></span>Offline';
 
         }
 
@@ -1009,7 +1107,9 @@
 
     async function setOnline() {
 
-      if (!currentUser) return;
+      if (!currentUser) {
+        return;
+      }
 
 
       const presenceRef =
@@ -1030,6 +1130,23 @@
           }
         );
 
+
+        /*
+          Firebase automatically changes
+          this user to offline if the
+          connection is lost.
+        */
+
+        await onDisconnect(
+          presenceRef
+        ).set(
+          {
+            online: false,
+            lastSeen: Date.now()
+          }
+        );
+
+
       } catch (error) {
 
         console.error(
@@ -1044,7 +1161,9 @@
 
     async function setOffline() {
 
-      if (!currentUser) return;
+      if (!currentUser) {
+        return;
+      }
 
 
       const presenceRef =
@@ -1068,7 +1187,7 @@
       } catch (error) {
 
         console.error(
-          "Offline status error:",
+          "Offline error:",
           error
         );
 
@@ -1082,7 +1201,10 @@
       const otherUser =
         getOtherUserId();
 
-      if (!otherUser) return;
+
+      if (!otherUser) {
+        return;
+      }
 
 
       const otherPresenceRef =
@@ -1100,6 +1222,22 @@
 
             const data =
               snapshot.val();
+
+
+            /*
+              Don't replace typing status
+              with Online while typing.
+            */
+
+            const isTyping =
+              typingBubble.classList.contains(
+                "show"
+              );
+
+
+            if (isTyping) {
+              return;
+            }
 
 
             if (
@@ -1132,33 +1270,271 @@
     }
 
 
-    window.addEventListener(
-      "beforeunload",
-      () => {
+    /* =========================
+       TYPING
+    ========================== */
 
-        setOffline();
+    function getTypingRef() {
+
+      if (!currentUser) {
+        return null;
+      }
+
+
+      return ref(
+        database,
+        "messages/__typing__/" +
+        currentUser.uid
+      );
+
+    }
+
+
+    async function setTyping(
+      isTyping
+    ) {
+
+      const typingRef =
+        getTypingRef();
+
+
+      if (!typingRef) {
+        return;
+      }
+
+
+      try {
+
+        await set(
+          typingRef,
+          {
+            typing: isTyping,
+            timestamp: Date.now()
+          }
+        );
+
+
+        /*
+          If browser disconnects,
+          typing automatically becomes false.
+        */
+
+        if (isTyping) {
+
+          await onDisconnect(
+            typingRef
+          ).set(
+            {
+              typing: false,
+              timestamp: Date.now()
+            }
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Typing error:",
+          error
+        );
 
       }
-    );
+
+    }
 
 
-    document.addEventListener(
-      "visibilitychange",
+    function startTypingListener() {
+
+      const otherUser =
+        getOtherUserId();
+
+
+      if (!otherUser) {
+        return;
+      }
+
+
+      const otherTypingRef =
+        ref(
+          database,
+          "messages/__typing__/" +
+          otherUser
+        );
+
+
+      stopTypingListener =
+        onValue(
+          otherTypingRef,
+          (snapshot) => {
+
+            const data =
+              snapshot.val();
+
+
+            if (
+              data &&
+              data.typing === true
+            ) {
+
+              showTyping();
+
+            } else {
+
+              hideTyping();
+
+            }
+
+          }
+        );
+
+    }
+
+
+    function showTyping() {
+
+      typingBubble.classList.add(
+        "show"
+      );
+
+
+      onlineStatus.innerHTML =
+        '<span class="typing-text">typing...</span>';
+
+
+      messages.scrollTop =
+        messages.scrollHeight;
+
+    }
+
+
+    function hideTyping() {
+
+      typingBubble.classList.remove(
+        "show"
+      );
+
+
+      /*
+        Restore Online/Last seen
+        after typing stops.
+      */
+
+      restorePresenceText();
+
+    }
+
+
+    function restorePresenceText() {
+
+      const otherUser =
+        getOtherUserId();
+
+
+      if (!otherUser) {
+        return;
+      }
+
+
+      const otherPresenceRef =
+        ref(
+          database,
+          "messages/__presence__/" +
+          otherUser
+        );
+
+
+      onValue(
+        otherPresenceRef,
+        (snapshot) => {
+
+          const data =
+            snapshot.val();
+
+
+          if (
+            typingBubble.classList.contains(
+              "show"
+            )
+          ) {
+            return;
+          }
+
+
+          if (
+            data &&
+            data.online === true
+          ) {
+
+            onlineStatus.innerHTML =
+              '<span class="online-dot"></span>Online';
+
+          } else if (
+            data &&
+            data.lastSeen
+          ) {
+
+            onlineStatus.innerHTML =
+              '<span class="offline-dot"></span>Last seen ' +
+              formatTime(data.lastSeen);
+
+          } else {
+
+            onlineStatus.innerHTML =
+              '<span class="offline-dot"></span>Offline';
+
+          }
+
+        },
+        {
+          onlyOnce: true
+        }
+      );
+
+    }
+
+
+    messageInput.addEventListener(
+      "input",
       () => {
 
-        if (!currentUser) return;
+        if (!currentUser) {
+          return;
+        }
 
 
-        if (
-          document.visibilityState ===
-          "visible"
-        ) {
+        const text =
+          messageInput.value.trim();
 
-          setOnline();
+
+        if (text.length > 0) {
+
+          setTyping(true);
+
+
+          clearTimeout(
+            typingTimer
+          );
+
+
+          typingTimer =
+            setTimeout(
+              () => {
+
+                setTyping(false);
+
+              },
+              1200
+            );
+
 
         } else {
 
-          setOffline();
+          clearTimeout(
+            typingTimer
+          );
+
+          setTyping(false);
 
         }
 
@@ -1175,7 +1551,8 @@
       const empty =
         document.createElement("div");
 
-      empty.id = "emptyChat";
+      empty.id =
+        "emptyChat";
 
       empty.className =
         "empty-chat";
@@ -1183,7 +1560,16 @@
       empty.textContent =
         "No messages yet.";
 
-      messages.appendChild(empty);
+
+      /*
+        Put empty message before
+        typing bubble.
+      */
+
+      messages.insertBefore(
+        empty,
+        typingBubble
+      );
 
 
       stopMessageListener =
@@ -1199,13 +1585,13 @@
 
 
             /*
-              Presence is stored inside
-              messages only to work with
-              current Firebase rules.
+              These are system nodes,
+              not normal messages.
             */
 
             if (
-              key === "__presence__"
+              key === "__presence__" ||
+              key === "__typing__"
             ) {
 
               return;
@@ -1213,7 +1599,9 @@
             }
 
 
-            if (!data) return;
+            if (!data || !data.text) {
+              return;
+            }
 
 
             const emptyChat =
@@ -1223,9 +1611,7 @@
 
 
             if (emptyChat) {
-
               emptyChat.remove();
-
             }
 
 
@@ -1236,8 +1622,7 @@
 
 
             /*
-              If this message belongs to
-              the other person, mark it read.
+              Mark received message as read.
             */
 
             if (
@@ -1274,11 +1659,6 @@
         );
 
 
-      /*
-        Listen for changes so ✓ becomes
-        ✓✓ when message is read.
-      */
-
       stopChangedListener =
         onChildChanged(
           messagesRef,
@@ -1286,7 +1666,9 @@
 
             if (
               snapshot.key ===
-              "__presence__"
+                "__presence__" ||
+              snapshot.key ===
+                "__typing__"
             ) {
 
               return;
@@ -1294,13 +1676,9 @@
             }
 
 
-            const data =
-              snapshot.val();
-
-
             updateRenderedMessage(
               snapshot.key,
-              data
+              snapshot.val()
             );
 
           }
@@ -1313,10 +1691,13 @@
        DATE
     ========================== */
 
-    function dateKey(timestamp) {
+    function dateKey(
+      timestamp
+    ) {
 
       const d =
         new Date(timestamp);
+
 
       return (
         d.getFullYear() +
@@ -1333,7 +1714,9 @@
     }
 
 
-    function dateLabel(timestamp) {
+    function dateLabel(
+      timestamp
+    ) {
 
       const d =
         new Date(timestamp);
@@ -1343,6 +1726,7 @@
 
       const yesterday =
         new Date();
+
 
       yesterday.setDate(
         yesterday.getDate() - 1
@@ -1360,19 +1744,12 @@
 
 
       if (key === todayKey) {
-
         return "Today";
-
       }
 
 
-      if (
-        key ===
-        yesterdayKey
-      ) {
-
+      if (key === yesterdayKey) {
         return "Yesterday";
-
       }
 
 
@@ -1392,7 +1769,9 @@
        TIME
     ========================== */
 
-    function formatTime(timestamp) {
+    function formatTime(
+      timestamp
+    ) {
 
       return new Date(
         timestamp
@@ -1416,7 +1795,14 @@
       data
     ) {
 
-      if (!data.text) return;
+      if (!data.text) {
+        return;
+      }
+
+
+      const timestamp =
+        data.timestamp ||
+        Date.now();
 
 
       /*
@@ -1424,9 +1810,7 @@
       */
 
       const currentDate =
-        dateKey(
-          data.timestamp || Date.now()
-        );
+        dateKey(timestamp);
 
 
       if (
@@ -1441,14 +1825,19 @@
           "date-separator";
 
         separator.textContent =
-          dateLabel(
-            data.timestamp ||
-            Date.now()
-          );
+          dateLabel(timestamp);
 
-        messages.appendChild(
-          separator
+
+        /*
+          Insert separator before
+          typing bubble.
+        */
+
+        messages.insertBefore(
+          separator,
+          typingBubble
         );
+
 
         previousDate =
           currentDate;
@@ -1459,6 +1848,7 @@
       const row =
         document.createElement("div");
 
+
       const mine =
         currentUser &&
         data.sender ===
@@ -1467,7 +1857,9 @@
 
       row.className =
         "message-row " +
-        (mine ? "mine" : "theirs");
+        (mine
+          ? "mine"
+          : "theirs");
 
 
       row.dataset.messageId =
@@ -1477,13 +1869,17 @@
       const bubble =
         document.createElement("div");
 
+
       bubble.className =
         "message " +
-        (mine ? "mine" : "theirs");
+        (mine
+          ? "mine"
+          : "theirs");
 
 
       const text =
         document.createElement("div");
+
 
       text.className =
         "message-text";
@@ -1500,6 +1896,7 @@
       const meta =
         document.createElement("div");
 
+
       meta.className =
         "message-meta";
 
@@ -1507,14 +1904,12 @@
       const time =
         document.createElement("span");
 
+
       time.className =
         "message-time";
 
       time.textContent =
-        formatTime(
-          data.timestamp ||
-          Date.now()
-        );
+        formatTime(timestamp);
 
 
       meta.appendChild(
@@ -1523,7 +1918,7 @@
 
 
       /*
-        Sent / Read
+        Sent / Read ticks
       */
 
       if (mine) {
@@ -1531,19 +1926,25 @@
         const ticks =
           document.createElement("span");
 
+
         ticks.className =
           "ticks " +
-          (data.read
-            ? "read"
-            : "");
+          (
+            data.read
+              ? "read"
+              : ""
+          );
+
 
         ticks.textContent =
           data.read
             ? "✓✓"
             : "✓";
 
+
         ticks.dataset.ticks =
           "true";
+
 
         meta.appendChild(
           ticks
@@ -1556,12 +1957,19 @@
         meta
       );
 
+
       row.appendChild(
         bubble
       );
 
-      messages.appendChild(
-        row
+
+      /*
+        Insert before typing bubble
+      */
+
+      messages.insertBefore(
+        row,
+        typingBubble
       );
 
 
@@ -1572,7 +1980,7 @@
 
 
     /* =========================
-       UPDATE READ RECEIPT
+       READ RECEIPT UPDATE
     ========================== */
 
     function updateRenderedMessage(
@@ -1588,7 +1996,9 @@
         );
 
 
-      if (!row) return;
+      if (!row) {
+        return;
+      }
 
 
       const ticks =
@@ -1597,7 +2007,9 @@
         );
 
 
-      if (!ticks) return;
+      if (!ticks) {
+        return;
+      }
 
 
       if (data.read) {
@@ -1629,14 +2041,18 @@
 
     async function sendMessage() {
 
-      if (!currentUser) return;
+      if (!currentUser) {
+        return;
+      }
 
 
       const text =
         messageInput.value.trim();
 
 
-      if (!text) return;
+      if (!text) {
+        return;
+      }
 
 
       sendButton.disabled =
@@ -1645,24 +2061,38 @@
 
       try {
 
+        clearTimeout(
+          typingTimer
+        );
+
+
+        await setTyping(
+          false
+        );
+
+
         await push(
           messagesRef,
           {
 
-            type: "text",
+            type:
+              "text",
 
-            text: text,
+            text:
+              text,
 
             sender:
               currentUser.uid,
 
             email:
-              currentUser.email || "",
+              currentUser.email ||
+              "",
 
             timestamp:
               Date.now(),
 
-            read: false
+            read:
+              false
 
           }
         );
@@ -1670,6 +2100,7 @@
 
         messageInput.value =
           "";
+
 
         messageInput.focus();
 
@@ -1724,7 +2155,19 @@
       "click",
       async () => {
 
-        if (!currentUser) return;
+        if (!currentUser) {
+          return;
+        }
+
+
+        clearTimeout(
+          typingTimer
+        );
+
+
+        await setTyping(
+          false
+        );
 
 
         await setOffline();
@@ -1752,7 +2195,9 @@
       "click",
       async () => {
 
-        if (!currentUser) return;
+        if (!currentUser) {
+          return;
+        }
 
 
         const confirmed =
@@ -1763,7 +2208,9 @@
           );
 
 
-        if (!confirmed) return;
+        if (!confirmed) {
+          return;
+        }
 
 
         clearChatButton.disabled =
@@ -1787,11 +2234,14 @@
           const empty =
             document.createElement("div");
 
+
           empty.id =
             "emptyChat";
 
+
           empty.className =
             "empty-chat";
+
 
           empty.textContent =
             "No messages yet.";
@@ -1799,6 +2249,16 @@
 
           messages.appendChild(
             empty
+          );
+
+
+          messages.appendChild(
+            typingBubble
+          );
+
+
+          typingBubble.classList.remove(
+            "show"
           );
 
 
@@ -1836,7 +2296,7 @@
 
 
     /* =========================
-       EMOJI
+       EMOJIS
     ========================== */
 
     const emojis = [
@@ -1852,9 +2312,9 @@
       "💔","💕","💖","💗","💓","💞","💘","💝",
       "👍","👎","👌","✌️","🤞","🙏","👏","🙌",
       "💪","🤝","👋","🤌","👀","🔥","✨","⭐",
-      "🎉","🎊","❤️‍🔥","💯","✅","❌","💯","😄",
+      "🎉","🎊","❤️‍🔥","💯","✅","❌","😄","😍",
       "🍕","🍔","🍟","🌭","🍎","🍌","🍉","🍓",
-      "☕","🍵","🥤","🍺","🎂","🍫","🍿","🍪"
+      "☕","🍵","🥤","🎂","🍫","🍿","🍪","🥳"
 
     ];
 
@@ -1867,11 +2327,14 @@
             "button"
           );
 
+
         button.className =
           "emoji-item";
 
+
         button.type =
           "button";
+
 
         button.textContent =
           emoji;
@@ -1885,6 +2348,8 @@
               emoji;
 
             messageInput.focus();
+
+            setTyping(true);
 
           }
         );
@@ -1963,7 +2428,7 @@
 
 
     /* =========================
-       VIDEO
+       VIDEO CALL
     ========================== */
 
     videoButton.addEventListener(
