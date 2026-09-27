@@ -3,252 +3,282 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Private Chat</title>
+  <meta name="theme-color" content="#12091c">
+  <title>Private Chat ❤️</title>
 
   <style>
     * {
       box-sizing: border-box;
-    }
-
-    html,
-    body {
       margin: 0;
       padding: 0;
-      width: 100%;
-      height: 100%;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #dfe5e8;
     }
 
     body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255, 0, 128, 0.18), transparent 30%),
+        radial-gradient(circle at 85% 90%, rgba(130, 50, 255, 0.20), transparent 35%),
+        linear-gradient(135deg, #09060d, #15091e 50%, #09060d);
+      min-height: 100vh;
+      color: #fff;
       overflow: hidden;
     }
 
-    /* =========================
-       LOGIN
-    ========================= */
+    /* ================= LOGIN ================= */
 
     #loginScreen {
-      min-height: 100vh;
+      height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
-      background: linear-gradient(135deg, #e8f0ff, #f7f9fb);
     }
 
-    .login-box {
+    .login-card {
       width: 100%;
       max-width: 390px;
-      background: #fff;
-      border-radius: 20px;
-      padding: 30px;
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.14);
+      padding: 38px 28px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      box-shadow:
+        0 0 50px rgba(255, 0, 140, 0.12),
+        0 25px 80px rgba(0, 0, 0, 0.55);
+      text-align: center;
     }
 
-    .login-logo {
-      width: 70px;
-      height: 70px;
-      margin: 0 auto 15px;
+    .login-heart {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 20px;
       border-radius: 50%;
-      background: #128c7e;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: white;
-      font-size: 34px;
+      font-size: 40px;
+      background: linear-gradient(145deg, #ff1687, #7d25ff);
+      box-shadow:
+        0 0 25px rgba(255, 20, 140, 0.55),
+        0 0 65px rgba(125, 37, 255, 0.30);
+      animation: heartbeat 2s infinite;
     }
 
-    .login-box h2 {
-      text-align: center;
-      margin: 0 0 25px;
-      color: #222;
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.06);
+      }
     }
 
-    .login-box input {
+    .login-card h1 {
+      font-size: 28px;
+      margin-bottom: 7px;
+      letter-spacing: 0.5px;
+    }
+
+    .login-card p {
+      color: #c8baca;
+      font-size: 14px;
+      margin-bottom: 25px;
+    }
+
+    .login-card input {
       width: 100%;
-      height: 48px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      padding: 0 14px;
+      padding: 15px 16px;
       margin-bottom: 13px;
-      font-size: 15px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 15px;
       outline: none;
+      background: rgba(0,0,0,0.28);
+      color: white;
+      font-size: 15px;
     }
 
-    .login-box input:focus {
-      border-color: #128c7e;
+    .login-card input::placeholder {
+      color: #9b8ca2;
+    }
+
+    .login-card input:focus {
+      border-color: #ff2b9a;
+      box-shadow: 0 0 18px rgba(255, 43, 154, 0.18);
     }
 
     #loginButton {
       width: 100%;
-      height: 48px;
-      border: 0;
-      border-radius: 10px;
-      background: #128c7e;
+      padding: 15px;
+      border: none;
+      border-radius: 15px;
       color: white;
       font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
+      background: linear-gradient(135deg, #ff1687, #8c25ff);
+      box-shadow: 0 8px 25px rgba(255, 0, 130, 0.25);
     }
 
-    #loginButton:disabled {
-      opacity: 0.7;
+    #loginButton:active {
+      transform: scale(0.98);
     }
 
     #loginError {
-      color: #d93025;
-      text-align: center;
-      margin-top: 12px;
-      font-size: 14px;
+      color: #ff7ebd;
+      font-size: 13px;
+      margin-top: 15px;
+      min-height: 18px;
     }
 
-    /* =========================
-       CHAT
-    ========================= */
+    /* ================= CHAT APP ================= */
 
     #chatScreen {
       display: none;
-      width: 100%;
       height: 100vh;
-      flex-direction: column;
-      background: #efeae2;
+      width: 100%;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
+    .chat-app {
+      width: 100%;
+      max-width: 900px;
+      height: 100vh;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      background: rgba(10, 7, 14, 0.78);
+      box-shadow: 0 0 100px rgba(255, 0, 140, 0.08);
+      position: relative;
+    }
+
+    /* ================= HEADER ================= */
 
     .chat-header {
-      height: 64px;
+      min-height: 74px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      background: rgba(24, 12, 31, 0.92);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      position: relative;
+      z-index: 5;
+    }
+
+    .avatar {
+      width: 47px;
+      height: 47px;
       flex-shrink: 0;
-      background: #075e54;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 12px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
-      z-index: 10;
-    }
-
-    .profile-area {
-      display: flex;
-      align-items: center;
-      min-width: 0;
-    }
-
-    .profile-avatar {
-      width: 44px;
-      height: 44px;
       border-radius: 50%;
-      background: #128c7e;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      margin-right: 10px;
-      flex-shrink: 0;
+      font-size: 23px;
+      background: linear-gradient(145deg, #ff1687, #7c28ff);
+      box-shadow: 0 0 20px rgba(255, 0, 130, 0.32);
     }
 
-    .profile-info {
+    .header-info {
+      flex: 1;
       min-width: 0;
     }
 
-    .profile-name {
+    .header-info h2 {
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 700;
       white-space: nowrap;
     }
 
-    .online-status {
-      margin-top: 2px;
+    #statusText {
       font-size: 12px;
-      color: #d8f8f2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 180px;
+      color: #aaa0b1;
+      margin-top: 3px;
     }
 
-    .online-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: #25d366;
-      border-radius: 50%;
-      margin-right: 4px;
+    #statusText.online {
+      color: #ff63b4;
     }
 
-    .offline-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: #aaa;
-      border-radius: 50%;
-      margin-right: 4px;
-    }
-
-    .typing-text {
-      color: #b9f5ec;
-      font-weight: bold;
+    #statusText.typing {
+      color: #ff4ca9;
+      font-weight: 600;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 5px;
     }
 
-    .header-actions button {
-      border: 0;
-      background: transparent;
-      color: white;
-      cursor: pointer;
+    .icon-btn {
       width: 38px;
       height: 38px;
+      border: none;
       border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      color: #eee;
+      cursor: pointer;
       font-size: 17px;
+      transition: 0.2s;
     }
 
-    .header-actions button:hover {
-      background: rgba(255, 255, 255, 0.13);
+    .icon-btn:hover {
+      background: rgba(255, 35, 150, 0.16);
+      color: #ff69b9;
+      box-shadow: 0 0 15px rgba(255, 35, 150, 0.15);
     }
 
-    /* =========================
-       MESSAGES
-    ========================= */
+    .logout-btn {
+      font-size: 15px;
+    }
+
+    /* ================= MESSAGES ================= */
 
     #messages {
       flex: 1;
       overflow-y: auto;
-      padding: 14px 7%;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      background-color: #efeae2;
-      background-image:
-        radial-gradient(
-          rgba(0, 0, 0, 0.025) 1px,
-          transparent 1px
-        );
-      background-size: 18px 18px;
+      padding: 20px 15px 15px;
+      scroll-behavior: smooth;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 0, 130, 0.055), transparent 35%);
+    }
+
+    #messages::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    #messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 55, 160, 0.25);
+      border-radius: 20px;
     }
 
     .date-separator {
-      align-self: center;
-      background: #d9fdd3;
-      color: #54656f;
+      width: fit-content;
+      margin: 10px auto 16px;
+      padding: 6px 13px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.07);
+      color: #bcaebe;
       font-size: 11px;
-      padding: 6px 10px;
-      border-radius: 8px;
-      margin: 12px 0 8px;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(255,255,255,0.06);
     }
 
     .message-row {
-      width: 100%;
       display: flex;
-      margin-bottom: 2px;
+      margin-bottom: 9px;
+      animation: messageIn 0.2s ease-out;
+    }
+
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(5px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .message-row.mine {
@@ -259,149 +289,188 @@
       justify-content: flex-start;
     }
 
-    .message {
+    .bubble {
+      max-width: min(75%, 580px);
+      padding: 9px 11px 7px;
+      border-radius: 18px;
       position: relative;
-      max-width: min(75%, 600px);
-      padding: 7px 9px 5px;
-      border-radius: 8px;
+      word-break: break-word;
       font-size: 15px;
       line-height: 1.4;
-      word-break: break-word;
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
     }
 
-    .message.mine {
-      background: #d9fdd3;
-      border-top-right-radius: 2px;
+    .mine .bubble {
+      background: linear-gradient(135deg, #a91869, #7623a6);
+      border-bottom-right-radius: 5px;
+      box-shadow: 0 5px 18px rgba(255, 0, 130, 0.10);
     }
 
-    .message.theirs {
-      background: #ffffff;
-      border-top-left-radius: 2px;
+    .theirs .bubble {
+      background: rgba(255,255,255,0.085);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-bottom-left-radius: 5px;
     }
 
     .message-text {
+      padding-right: 48px;
       white-space: pre-wrap;
-      padding-right: 65px;
-      min-height: 18px;
     }
 
     .message-meta {
       float: right;
+      margin-left: 8px;
+      margin-top: 5px;
       display: flex;
       align-items: center;
       gap: 3px;
-      margin-left: 8px;
-      margin-top: 3px;
-      height: 16px;
-      position: relative;
-      top: 2px;
-    }
-
-    .message-time {
+      height: 14px;
+      color: rgba(255,255,255,0.62);
       font-size: 10px;
-      color: #667781;
-      white-space: nowrap;
     }
 
     .ticks {
-      font-size: 14px;
-      line-height: 10px;
-      letter-spacing: -3px;
-      color: #667781;
-      padding-right: 2px;
+      font-size: 13px;
+      letter-spacing: -4px;
+      padding-right: 3px;
     }
 
     .ticks.read {
-      color: #53bdeb;
+      color: #58c7ff;
     }
 
-    .empty-chat {
-      align-self: center;
-      margin-top: 40px;
-      background: rgba(255, 255, 255, 0.75);
-      color: #667781;
-      padding: 8px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-    }
-
-    /* =========================
-       TYPING BUBBLE
-    ========================= */
+    /* ================= TYPING ================= */
 
     .typing-bubble {
       display: none;
-      align-self: flex-start;
-      background: white;
+      width: fit-content;
       padding: 9px 13px;
-      border-radius: 12px;
-      margin: 4px 0;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    }
-
-    .typing-bubble.show {
-      display: block;
+      margin-bottom: 8px;
+      border-radius: 18px;
+      border-bottom-left-radius: 5px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.07);
     }
 
     .typing-dots {
       display: flex;
-      align-items: center;
       gap: 4px;
-      height: 15px;
+      align-items: center;
     }
 
     .typing-dots span {
       width: 6px;
       height: 6px;
-      background: #8a9aa3;
+      background: #ff5eb0;
       border-radius: 50%;
-      animation: typing 1.2s infinite;
+      animation: typingDot 1.2s infinite;
     }
 
     .typing-dots span:nth-child(2) {
-      animation-delay: 0.2s;
+      animation-delay: 0.15s;
     }
 
     .typing-dots span:nth-child(3) {
-      animation-delay: 0.4s;
+      animation-delay: 0.3s;
     }
 
-    @keyframes typing {
-      0%,
-      60%,
-      100% {
+    @keyframes typingDot {
+      0%, 60%, 100% {
         transform: translateY(0);
-        opacity: 0.5;
+        opacity: 0.45;
       }
-
       30% {
         transform: translateY(-4px);
         opacity: 1;
       }
     }
 
-    /* =========================
-       EMOJI
-    ========================= */
+    /* ================= INPUT ================= */
 
-    .emoji-picker {
-      display: none;
-      position: absolute;
-      bottom: 70px;
-      left: 10px;
-      width: min(360px, calc(100vw - 20px));
-      max-height: 280px;
-      overflow-y: auto;
-      background: white;
-      border-radius: 14px;
-      padding: 12px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
-      z-index: 20;
+    .input-area {
+      padding: 10px 12px 12px;
+      background: rgba(22, 11, 29, 0.96);
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    .emoji-picker.show {
-      display: block;
+    .input-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.075);
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 0 5px 0 8px;
+    }
+
+    .emoji-btn,
+    .gif-btn {
+      border: none;
+      background: transparent;
+      color: #d6cbd8;
+      cursor: pointer;
+      font-size: 19px;
+      width: 34px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    .gif-btn {
+      font-size: 12px;
+      font-weight: 800;
+      color: #ff66b8;
+    }
+
+    #messageInput {
+      flex: 1;
+      min-width: 0;
+      height: 42px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: white;
+      font-size: 15px;
+      padding: 0 4px;
+    }
+
+    #messageInput::placeholder {
+      color: #988c9e;
+    }
+
+    #sendButton {
+      width: 45px;
+      height: 45px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff1687, #8425ff);
+      color: white;
+      cursor: pointer;
+      font-size: 19px;
+      box-shadow: 0 5px 20px rgba(255, 0, 130, 0.25);
+      flex-shrink: 0;
+    }
+
+    #sendButton:active {
+      transform: scale(0.92);
+    }
+
+    /* ================= EMOJI PANEL ================= */
+
+    #emojiPanel {
+      display: none;
+      position: absolute;
+      bottom: 76px;
+      left: 12px;
+      width: min(330px, calc(100% - 24px));
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(27, 14, 35, 0.97);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 15px 50px rgba(0,0,0,0.45);
+      z-index: 10;
     }
 
     .emoji-grid {
@@ -410,143 +479,109 @@
       gap: 4px;
     }
 
-    .emoji-item {
-      border: 0;
+    .emoji-grid button {
+      border: none;
       background: transparent;
-      font-size: 25px;
+      font-size: 23px;
       cursor: pointer;
-      border-radius: 8px;
       padding: 5px;
+      border-radius: 8px;
     }
 
-    .emoji-item:hover {
-      background: #f0f2f5;
+    .emoji-grid button:hover {
+      background: rgba(255,255,255,0.08);
     }
 
-    /* =========================
-       INPUT
-    ========================= */
+    /* ================= EMPTY ================= */
 
-    .input-area {
-      position: relative;
-      flex-shrink: 0;
-      background: #f0f2f5;
-      padding: 8px 10px;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      border-top: 1px solid #ddd;
+    .empty-chat {
+      text-align: center;
+      margin: 30vh auto 0;
+      color: #9f92a4;
+      font-size: 14px;
     }
 
-    .input-button {
-      width: 43px;
-      height: 43px;
-      flex-shrink: 0;
-      border: 0;
-      border-radius: 50%;
-      background: transparent;
-      color: #54656f;
-      cursor: pointer;
-      font-size: 21px;
+    .empty-chat .heart {
+      font-size: 38px;
+      margin-bottom: 10px;
+      opacity: 0.75;
     }
 
-    .input-button:hover {
-      background: #e1e5e8;
-    }
-
-    #messageInput {
-      flex: 1;
-      min-width: 0;
-      height: 43px;
-      border: 0;
-      outline: none;
-      border-radius: 22px;
-      background: white;
-      padding: 0 16px;
-      font-size: 15px;
-    }
-
-    #sendButton {
-      width: 45px;
-      height: 45px;
-      flex-shrink: 0;
-      border: 0;
-      border-radius: 50%;
-      background: #128c7e;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    #sendButton:disabled {
-      opacity: 0.6;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
+    /* ================= MOBILE ================= */
 
     @media (max-width: 600px) {
-
-      .chat-header {
-        height: 60px;
-        padding: 0 7px;
+      .chat-app {
+        max-width: none;
       }
 
-      .profile-avatar {
-        width: 40px;
-        height: 40px;
+      .chat-header {
+        min-height: 66px;
+        padding: 8px 9px;
+      }
+
+      .avatar {
+        width: 43px;
+        height: 43px;
         font-size: 20px;
       }
 
-      .profile-name {
+      .header-info h2 {
         font-size: 15px;
       }
 
-      .online-status {
+      #statusText {
         font-size: 11px;
-        max-width: 160px;
       }
 
-      .header-actions button {
+      .header-actions {
+        gap: 2px;
+      }
+
+      .icon-btn {
         width: 34px;
         height: 34px;
         font-size: 15px;
       }
 
       #messages {
-        padding: 10px 5px;
+        padding: 15px 9px 12px;
       }
 
-      .message {
-        max-width: 86%;
-        font-size: 14px;
+      .bubble {
+        max-width: 82%;
+        font-size: 14.5px;
       }
 
       .input-area {
-        padding: 6px;
-        gap: 3px;
+        padding: 8px 7px 9px;
       }
 
-      .input-button {
-        width: 40px;
-        height: 40px;
-        font-size: 19px;
+      .input-wrap {
+        padding-left: 5px;
       }
 
-      #messageInput {
-        height: 41px;
-        font-size: 14px;
+      .emoji-btn,
+      .gif-btn {
+        width: 31px;
       }
 
       #sendButton {
-        width: 42px;
-        height: 42px;
+        width: 43px;
+        height: 43px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .header-actions .gif-head {
+        display: none;
       }
 
-      .emoji-picker {
-        bottom: 60px;
-        left: 5px;
+      .header-actions .video-head {
+        display: none;
+      }
+
+      .bubble {
+        max-width: 87%;
       }
 
       .emoji-grid {
@@ -558,24 +593,20 @@
 
 <body>
 
-  <!-- =========================
-       LOGIN
-  ========================== -->
+  <!-- ================= LOGIN ================= -->
 
-  <div id="loginScreen">
+  <section id="loginScreen">
+    <div class="login-card">
 
-    <div class="login-box">
+      <div class="login-heart">❤️</div>
 
-      <div class="login-logo">
-        💬
-      </div>
-
-      <h2>Private Chat</h2>
+      <h1>Private Chat</h1>
+      <p>Just two people. One private conversation.</p>
 
       <input
         type="email"
         id="emailInput"
-        placeholder="Email"
+        placeholder="Email address"
         autocomplete="email"
       >
 
@@ -586,173 +617,155 @@
         autocomplete="current-password"
       >
 
-      <button id="loginButton">
-        Login
-      </button>
+      <button id="loginButton">Enter Private Chat 💜</button>
 
       <div id="loginError"></div>
 
     </div>
+  </section>
 
-  </div>
 
+  <!-- ================= CHAT ================= -->
 
-  <!-- =========================
-       CHAT
-  ========================== -->
+  <section id="chatScreen">
 
-  <div id="chatScreen">
+    <div class="chat-app">
 
-    <div class="chat-header">
+      <!-- HEADER -->
+      <header class="chat-header">
 
-      <div class="profile-area">
+        <div class="avatar">❤️</div>
 
-        <div class="profile-avatar">
-          👤
+        <div class="header-info">
+          <h2>Private Chat</h2>
+          <div id="statusText">Offline</div>
         </div>
 
-        <div class="profile-info">
+        <div class="header-actions">
 
-          <div class="profile-name">
-            Private Chat
+          <button
+            class="icon-btn gif-head"
+            id="gifHeaderButton"
+            title="GIF"
+          >GIF</button>
+
+          <button
+            class="icon-btn video-head"
+            id="videoButton"
+            title="Video Call"
+          >📹</button>
+
+          <button
+            class="icon-btn"
+            id="clearChatButton"
+            title="Clear complete chat"
+          >🗑️</button>
+
+          <button
+            class="icon-btn logout-btn"
+            id="logoutButton"
+            title="Logout"
+          >↪</button>
+
+        </div>
+
+      </header>
+
+
+      <!-- MESSAGES -->
+      <main id="messages">
+
+        <div class="typing-bubble" id="typingBubble">
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
+        </div>
 
-          <div
-            class="online-status"
-            id="onlineStatus"
+      </main>
+
+
+      <!-- EMOJI PANEL -->
+      <div id="emojiPanel">
+        <div class="emoji-grid">
+
+          <button>😀</button>
+          <button>😂</button>
+          <button>🤣</button>
+          <button>😊</button>
+          <button>😍</button>
+          <button>🥰</button>
+          <button>😘</button>
+          <button>😉</button>
+
+          <button>😏</button>
+          <button>😌</button>
+          <button>😜</button>
+          <button>🤭</button>
+          <button>🫣</button>
+          <button>😈</button>
+          <button>🔥</button>
+          <button>❤️</button>
+
+          <button>💕</button>
+          <button>💗</button>
+          <button>💋</button>
+          <button>🥺</button>
+          <button>😚</button>
+          <button>😻</button>
+          <button>🫶</button>
+          <button>💞</button>
+
+          <button>✨</button>
+          <button>💫</button>
+          <button>🌹</button>
+          <button>😘</button>
+          <button>🙈</button>
+          <button>😉</button>
+          <button>😎</button>
+          <button>❤️‍🔥</button>
+
+        </div>
+      </div>
+
+
+      <!-- INPUT -->
+      <footer class="input-area">
+
+        <div class="input-wrap">
+
+          <button
+            class="emoji-btn"
+            id="emojiButton"
+            title="Emoji"
+          >😊</button>
+
+          <input
+            type="text"
+            id="messageInput"
+            placeholder="Type a message..."
+            autocomplete="off"
           >
-            Checking status...
-          </div>
+
+          <button
+            class="gif-btn"
+            id="gifButton"
+            title="GIF"
+          >GIF</button>
 
         </div>
 
-      </div>
+        <button id="sendButton" title="Send">➤</button>
 
-
-      <div class="header-actions">
-
-        <button
-          id="gifButton"
-          title="GIF"
-        >
-          GIF
-        </button>
-
-        <button
-          id="videoButton"
-          title="Video Call"
-        >
-          📹
-        </button>
-
-        <button
-          id="clearChatButton"
-          title="Clear complete history"
-        >
-          🗑️
-        </button>
-
-        <button
-          id="logoutButton"
-          title="Logout"
-        >
-          ⋮
-        </button>
-
-      </div>
+      </footer>
 
     </div>
 
-
-    <!-- =========================
-         MESSAGES
-    ========================== -->
-
-    <div id="messages">
-
-      <div
-        id="emptyChat"
-        class="empty-chat"
-      >
-        No messages yet.
-      </div>
-
-      <div
-        id="typingBubble"
-        class="typing-bubble"
-      >
-
-        <div class="typing-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-
-      </div>
-
-    </div>
+  </section>
 
 
-    <!-- =========================
-         INPUT
-    ========================== -->
-
-    <div class="input-area">
-
-      <div
-        class="emoji-picker"
-        id="emojiPicker"
-      >
-
-        <div
-          class="emoji-grid"
-          id="emojiGrid"
-        ></div>
-
-      </div>
-
-
-      <button
-        class="input-button"
-        id="emojiButton"
-        title="Emoji"
-      >
-        😊
-      </button>
-
-
-      <input
-        type="text"
-        id="messageInput"
-        placeholder="Type a message"
-        autocomplete="off"
-      >
-
-
-      <button
-        class="input-button"
-        id="gifInputButton"
-        title="GIF"
-      >
-        GIF
-      </button>
-
-
-      <button
-        id="sendButton"
-        title="Send"
-      >
-        ➤
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- =========================
-       FIREBASE
-  ========================== -->
+  <!-- ================= FIREBASE ================= -->
 
   <script type="module">
 
@@ -781,880 +794,613 @@
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-    /* =========================
-       FIREBASE CONFIG
-    ========================== */
+    /* ================= FIREBASE CONFIG ================= */
 
     const firebaseConfig = {
-
-      apiKey:
-        "AIzaSyDNcItOQqGQOmDVToGJhvIt8_TZFXEhJyo",
-
-      authDomain:
-        "private-chat-4c4a8.firebaseapp.com",
-
-      databaseURL:
-        "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
-
-      projectId:
-        "private-chat-4c4a8",
-
-      storageBucket:
-        "private-chat-4c4a8.firebasestorage.app",
-
-      messagingSenderId:
-        "333493856166",
-
-      appId:
-        "1:333493856166:web:a753d6dfc6db986c8b9167"
+      apiKey: "AIzaSyDNcIt8_TZFXEhJyo",
+      authDomain: "private-chat-4c4a8.firebaseapp.com",
+      databaseURL: "https://private-chat-4c4a8-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "private-chat-4c4a8",
+      storageBucket: "private-chat-4c4a8.firebasestorage.app",
+      messagingSenderId: "333493856166",
+      appId: "1:333493856166:web:a753d6dfc6db986c8b9167"
     };
 
+    const app = initializeApp(firebaseConfig);
 
-    /* =========================
-       INITIALIZE
-    ========================== */
-
-    const app =
-      initializeApp(firebaseConfig);
-
-    const auth =
-      getAuth(app);
-
-    const database =
-      getDatabase(app);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
 
 
-    const messagesRef =
-      ref(database, "messages");
+    /* ================= USERS ================= */
+
+    const USER_1 = "4kQ8bajQmPgYzhej526WHTofvWW2";
+    const USER_2 = "4S0l5VRvoPQdQ1qE8XaypIZprD33";
 
 
-    /* =========================
-       ELEMENTS
-    ========================== */
+    /* ================= DOM ================= */
 
-    const loginScreen =
-      document.getElementById("loginScreen");
+    const loginScreen = document.getElementById("loginScreen");
+    const chatScreen = document.getElementById("chatScreen");
 
-    const chatScreen =
-      document.getElementById("chatScreen");
+    const emailInput = document.getElementById("emailInput");
+    const passwordInput = document.getElementById("passwordInput");
 
-    const emailInput =
-      document.getElementById("emailInput");
+    const loginButton = document.getElementById("loginButton");
+    const loginError = document.getElementById("loginError");
 
-    const passwordInput =
-      document.getElementById("passwordInput");
+    const logoutButton = document.getElementById("logoutButton");
+    const clearChatButton = document.getElementById("clearChatButton");
 
-    const loginButton =
-      document.getElementById("loginButton");
+    const messages = document.getElementById("messages");
+    const messageInput = document.getElementById("messageInput");
+    const sendButton = document.getElementById("sendButton");
 
-    const loginError =
-      document.getElementById("loginError");
+    const statusText = document.getElementById("statusText");
 
-    const logoutButton =
-      document.getElementById("logoutButton");
+    const typingBubble = document.getElementById("typingBubble");
 
-    const messages =
-      document.getElementById("messages");
+    const emojiButton = document.getElementById("emojiButton");
+    const emojiPanel = document.getElementById("emojiPanel");
 
-    const messageInput =
-      document.getElementById("messageInput");
+    const gifButton = document.getElementById("gifButton");
+    const gifHeaderButton = document.getElementById("gifHeaderButton");
 
-    const sendButton =
-      document.getElementById("sendButton");
-
-    const clearChatButton =
-      document.getElementById("clearChatButton");
-
-    const emojiButton =
-      document.getElementById("emojiButton");
-
-    const emojiPicker =
-      document.getElementById("emojiPicker");
-
-    const emojiGrid =
-      document.getElementById("emojiGrid");
-
-    const onlineStatus =
-      document.getElementById("onlineStatus");
-
-    const typingBubble =
-      document.getElementById("typingBubble");
-
-    const gifButton =
-      document.getElementById("gifButton");
-
-    const gifInputButton =
-      document.getElementById("gifInputButton");
-
-    const videoButton =
-      document.getElementById("videoButton");
+    const videoButton = document.getElementById("videoButton");
 
 
-    /* =========================
-       VARIABLES
-    ========================== */
+    /* ================= STATE ================= */
 
     let currentUser = null;
 
     let stopMessageListener = null;
-
     let stopChangedListener = null;
-
     let stopPresenceListener = null;
-
     let stopTypingListener = null;
-
-    let previousDate = "";
 
     let typingTimer = null;
 
+    let otherUserOnline = false;
+    let otherUserLastSeen = null;
 
-    /* =========================
-       TWO USER IDS
-    ========================== */
+    let knownDates = new Set();
 
-    const USER_1 =
-      "4kQ8bajQmPgYzhej526WHTofvWW2";
 
-    const USER_2 =
-      "4S0l5VRvoPQdQ1qE8XaypIZprD33";
-
+    /* ================= HELPERS ================= */
 
     function getOtherUserId() {
-
-      if (!currentUser) {
-        return null;
-      }
+      if (!currentUser) return null;
 
       return currentUser.uid === USER_1
         ? USER_2
         : USER_1;
-
     }
 
 
-    /* =========================
-       LOGIN
-    ========================== */
+    function formatTime(timestamp) {
 
-    loginButton.addEventListener(
-      "click",
-      async () => {
+      if (!timestamp) return "";
 
-        const email =
-          emailInput.value.trim();
+      const date = new Date(timestamp);
 
-        const password =
-          passwordInput.value;
-
-        loginError.textContent = "";
-
-
-        if (!email || !password) {
-
-          loginError.textContent =
-            "Please enter email and password.";
-
-          return;
-
-        }
-
-
-        loginButton.disabled = true;
-
-        loginButton.textContent =
-          "Logging in...";
-
-
-        try {
-
-          await signInWithEmailAndPassword(
-            auth,
-            email,
-            password
-          );
-
-        } catch (error) {
-
-          console.error(error);
-
-          loginError.textContent =
-            "Login failed. Please check email and password.";
-
-        }
-
-
-        loginButton.disabled = false;
-
-        loginButton.textContent =
-          "Login";
-
-      }
-    );
-
-
-    passwordInput.addEventListener(
-      "keydown",
-      (event) => {
-
-        if (event.key === "Enter") {
-
-          loginButton.click();
-
-        }
-
-      }
-    );
-
-
-    /* =========================
-       AUTH STATE
-    ========================== */
-
-    onAuthStateChanged(
-      auth,
-      (user) => {
-
-        currentUser = user;
-
-
-        if (stopMessageListener) {
-
-          stopMessageListener();
-
-          stopMessageListener = null;
-
-        }
-
-
-        if (stopChangedListener) {
-
-          stopChangedListener();
-
-          stopChangedListener = null;
-
-        }
-
-
-        if (stopPresenceListener) {
-
-          stopPresenceListener();
-
-          stopPresenceListener = null;
-
-        }
-
-
-        if (stopTypingListener) {
-
-          stopTypingListener();
-
-          stopTypingListener = null;
-
-        }
-
-
-        messages.innerHTML = "";
-
-        previousDate = "";
-
-        typingBubble.classList.remove(
-          "show"
-        );
-
-
-        if (user) {
-
-          loginScreen.style.display =
-            "none";
-
-          chatScreen.style.display =
-            "flex";
-
-
-          setOnline();
-
-          setTyping(false);
-
-          startMessages();
-
-          startPresenceListener();
-
-          startTypingListener();
-
-          messageInput.focus();
-
-        } else {
-
-          loginScreen.style.display =
-            "flex";
-
-          chatScreen.style.display =
-            "none";
-
-          onlineStatus.innerHTML =
-            '<span class="offline-dot"></span>Offline';
-
-        }
-
-      }
-    );
-
-
-    /* =========================
-       PRESENCE
-    ========================== */
-
-    async function setOnline() {
-
-      if (!currentUser) {
-        return;
-      }
-
-
-      const presenceRef =
-        ref(
-          database,
-          "messages/__presence__/" +
-          currentUser.uid
-        );
-
-
-      try {
-
-        await set(
-          presenceRef,
-          {
-            online: true,
-            lastSeen: Date.now()
-          }
-        );
-
-
-        /*
-          Firebase automatically changes
-          this user to offline if the
-          connection is lost.
-        */
-
-        await onDisconnect(
-          presenceRef
-        ).set(
-          {
-            online: false,
-            lastSeen: Date.now()
-          }
-        );
-
-
-      } catch (error) {
-
-        console.error(
-          "Presence error:",
-          error
-        );
-
-      }
-
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
     }
 
 
-    async function setOffline() {
+    function getDateKey(timestamp) {
 
-      if (!currentUser) {
+      const date = new Date(timestamp);
+
+      return [
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate()
+      ].join("-");
+    }
+
+
+    function getDateLabel(timestamp) {
+
+      const date = new Date(timestamp);
+
+      const now = new Date();
+
+      const todayKey = getDateKey(now);
+
+      const yesterday = new Date();
+      yesterday.setDate(now.getDate() - 1);
+
+      const yesterdayKey = getDateKey(yesterday);
+
+      const key = getDateKey(timestamp);
+
+      if (key === todayKey) {
+        return "Today";
+      }
+
+      if (key === yesterdayKey) {
+        return "Yesterday";
+      }
+
+      return date.toLocaleDateString([], {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+      });
+    }
+
+
+    function formatLastSeen(timestamp) {
+
+      if (!timestamp) {
+        return "Offline";
+      }
+
+      const date = new Date(timestamp);
+
+      const now = new Date();
+
+      const diff = Math.floor(
+        (now.getTime() - date.getTime()) / 1000
+      );
+
+      if (diff < 60) {
+        return "last seen just now";
+      }
+
+      if (diff < 3600) {
+        const minutes = Math.floor(diff / 60);
+        return `last seen ${minutes} min ago`;
+      }
+
+      if (getDateKey(timestamp) === getDateKey(now)) {
+        return "last seen today at " + formatTime(timestamp);
+      }
+
+      return "last seen " + date.toLocaleDateString([], {
+        day: "numeric",
+        month: "short"
+      }) + " at " + formatTime(timestamp);
+    }
+
+
+    function scrollToBottom() {
+
+      setTimeout(() => {
+        messages.scrollTop = messages.scrollHeight;
+      }, 30);
+    }
+
+
+    function setStatus(text, className = "") {
+
+      statusText.textContent = text;
+      statusText.className = className;
+    }
+
+
+    /* ================= LOGIN ================= */
+
+    loginButton.addEventListener("click", async () => {
+
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        loginError.textContent = "Please enter email and password.";
         return;
       }
 
+      loginButton.disabled = true;
+      loginButton.textContent = "Entering...";
 
-      const presenceRef =
-        ref(
-          database,
-          "messages/__presence__/" +
-          currentUser.uid
-        );
-
+      loginError.textContent = "";
 
       try {
 
-        await set(
-          presenceRef,
-          {
-            online: false,
-            lastSeen: Date.now()
-          }
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
         );
 
       } catch (error) {
 
-        console.error(
-          "Offline error:",
-          error
-        );
+        console.error(error);
+
+        loginError.textContent =
+          "Login failed. Please check your email and password.";
 
       }
 
-    }
+      loginButton.disabled = false;
+      loginButton.textContent = "Enter Private Chat 💜";
+    });
 
 
-    function startPresenceListener() {
+    passwordInput.addEventListener("keydown", (event) => {
 
-      const otherUser =
-        getOtherUserId();
-
-
-      if (!otherUser) {
-        return;
+      if (event.key === "Enter") {
+        loginButton.click();
       }
 
-
-      const otherPresenceRef =
-        ref(
-          database,
-          "messages/__presence__/" +
-          otherUser
-        );
+    });
 
 
-      stopPresenceListener =
-        onValue(
-          otherPresenceRef,
-          (snapshot) => {
+    /* ================= PRESENCE ================= */
 
-            const data =
-              snapshot.val();
+    async function startPresence() {
 
+      if (!currentUser) return;
 
-            /*
-              Don't replace typing status
-              with Online while typing.
-            */
+      const uid = currentUser.uid;
 
-            const isTyping =
-              typingBubble.classList.contains(
-                "show"
-              );
-
-
-            if (isTyping) {
-              return;
-            }
-
-
-            if (
-              data &&
-              data.online === true
-            ) {
-
-              onlineStatus.innerHTML =
-                '<span class="online-dot"></span>Online';
-
-            } else if (
-              data &&
-              data.lastSeen
-            ) {
-
-              onlineStatus.innerHTML =
-                '<span class="offline-dot"></span>Last seen ' +
-                formatTime(data.lastSeen);
-
-            } else {
-
-              onlineStatus.innerHTML =
-                '<span class="offline-dot"></span>Offline';
-
-            }
-
-          }
-        );
-
-    }
-
-
-    /* =========================
-       TYPING
-    ========================== */
-
-    function getTypingRef() {
-
-      if (!currentUser) {
-        return null;
-      }
-
-
-      return ref(
+      const presenceRef = ref(
         database,
-        "messages/__typing__/" +
-        currentUser.uid
+        "messages/__presence__/" + uid
       );
 
+      await set(presenceRef, {
+        online: true,
+        lastSeen: Date.now()
+      });
+
+      onDisconnect(presenceRef).set({
+        online: false,
+        lastSeen: Date.now()
+      });
     }
 
 
-    async function setTyping(
-      isTyping
-    ) {
+    function startOtherUserPresence() {
 
-      const typingRef =
-        getTypingRef();
+      if (!currentUser) return;
 
+      const otherUid = getOtherUserId();
 
-      if (!typingRef) {
-        return;
+      const presenceRef = ref(
+        database,
+        "messages/__presence__/" + otherUid
+      );
+
+      if (stopPresenceListener) {
+        stopPresenceListener();
       }
 
+      stopPresenceListener = onValue(
+        presenceRef,
+        (snapshot) => {
 
-      try {
+          const data = snapshot.val();
 
-        await set(
-          typingRef,
-          {
-            typing: isTyping,
-            timestamp: Date.now()
-          }
-        );
+          otherUserOnline = !!(data && data.online);
 
+          otherUserLastSeen =
+            data && data.lastSeen
+              ? data.lastSeen
+              : null;
 
-        /*
-          If browser disconnects,
-          typing automatically becomes false.
-        */
-
-        if (isTyping) {
-
-          await onDisconnect(
-            typingRef
-          ).set(
-            {
-              typing: false,
-              timestamp: Date.now()
-            }
-          );
-
+          restorePresenceText();
         }
-
-      } catch (error) {
-
-        console.error(
-          "Typing error:",
-          error
-        );
-
-      }
-
-    }
-
-
-    function startTypingListener() {
-
-      const otherUser =
-        getOtherUserId();
-
-
-      if (!otherUser) {
-        return;
-      }
-
-
-      const otherTypingRef =
-        ref(
-          database,
-          "messages/__typing__/" +
-          otherUser
-        );
-
-
-      stopTypingListener =
-        onValue(
-          otherTypingRef,
-          (snapshot) => {
-
-            const data =
-              snapshot.val();
-
-
-            if (
-              data &&
-              data.typing === true
-            ) {
-
-              showTyping();
-
-            } else {
-
-              hideTyping();
-
-            }
-
-          }
-        );
-
-    }
-
-
-    function showTyping() {
-
-      typingBubble.classList.add(
-        "show"
       );
-
-
-      onlineStatus.innerHTML =
-        '<span class="typing-text">typing...</span>';
-
-
-      messages.scrollTop =
-        messages.scrollHeight;
-
-    }
-
-
-    function hideTyping() {
-
-      typingBubble.classList.remove(
-        "show"
-      );
-
-
-      /*
-        Restore Online/Last seen
-        after typing stops.
-      */
-
-      restorePresenceText();
-
     }
 
 
     function restorePresenceText() {
 
-      const otherUser =
-        getOtherUserId();
+      if (!currentUser) return;
 
-
-      if (!otherUser) {
+      if (typingBubble.style.display === "block") {
+        setStatus("typing...", "typing");
         return;
       }
 
+      if (otherUserOnline) {
 
-      const otherPresenceRef =
-        ref(
-          database,
-          "messages/__presence__/" +
-          otherUser
+        setStatus("online", "online");
+
+      } else {
+
+        setStatus(
+          formatLastSeen(otherUserLastSeen),
+          ""
         );
-
-
-      onValue(
-        otherPresenceRef,
-        (snapshot) => {
-
-          const data =
-            snapshot.val();
-
-
-          if (
-            typingBubble.classList.contains(
-              "show"
-            )
-          ) {
-            return;
-          }
-
-
-          if (
-            data &&
-            data.online === true
-          ) {
-
-            onlineStatus.innerHTML =
-              '<span class="online-dot"></span>Online';
-
-          } else if (
-            data &&
-            data.lastSeen
-          ) {
-
-            onlineStatus.innerHTML =
-              '<span class="offline-dot"></span>Last seen ' +
-              formatTime(data.lastSeen);
-
-          } else {
-
-            onlineStatus.innerHTML =
-              '<span class="offline-dot"></span>Offline';
-
-          }
-
-        },
-        {
-          onlyOnce: true
-        }
-      );
-
+      }
     }
 
 
-    messageInput.addEventListener(
-      "input",
-      () => {
+    /* ================= TYPING ================= */
 
-        if (!currentUser) {
-          return;
-        }
+    async function setTyping(value) {
 
+      if (!currentUser) return;
 
-        const text =
-          messageInput.value.trim();
+      const typingRef = ref(
+        database,
+        "messages/__typing__/" + currentUser.uid
+      );
 
+      await set(typingRef, {
+        typing: value,
+        timestamp: Date.now()
+      });
 
-        if (text.length > 0) {
+      if (value) {
 
-          setTyping(true);
-
-
-          clearTimeout(
-            typingTimer
-          );
-
-
-          typingTimer =
-            setTimeout(
-              () => {
-
-                setTyping(false);
-
-              },
-              1200
-            );
-
-
-        } else {
-
-          clearTimeout(
-            typingTimer
-          );
-
-          setTyping(false);
-
-        }
+        onDisconnect(typingRef).set({
+          typing: false,
+          timestamp: Date.now()
+        });
 
       }
-    );
+    }
 
 
-    /* =========================
-       MESSAGE LISTENER
-    ========================== */
+    function startTypingListener() {
 
-    function startMessages() {
+      if (!currentUser) return;
 
-      const empty =
+      const otherUid = getOtherUserId();
+
+      const typingRef = ref(
+        database,
+        "messages/__typing__/" + otherUid
+      );
+
+      if (stopTypingListener) {
+        stopTypingListener();
+      }
+
+      stopTypingListener = onValue(
+        typingRef,
+        (snapshot) => {
+
+          const data = snapshot.val();
+
+          const isTyping =
+            data &&
+            data.typing === true;
+
+          if (isTyping) {
+
+            typingBubble.style.display = "block";
+
+            setStatus(
+              "typing...",
+              "typing"
+            );
+
+            scrollToBottom();
+
+          } else {
+
+            typingBubble.style.display = "none";
+
+            restorePresenceText();
+          }
+
+        }
+      );
+    }
+
+
+    messageInput.addEventListener("input", () => {
+
+      if (!currentUser) return;
+
+      const hasText =
+        messageInput.value.trim().length > 0;
+
+      if (!hasText) {
+
+        clearTimeout(typingTimer);
+        setTyping(false);
+        return;
+      }
+
+      setTyping(true);
+
+      clearTimeout(typingTimer);
+
+      typingTimer = setTimeout(() => {
+        setTyping(false);
+      }, 1200);
+    });
+
+
+    /* ================= MESSAGES ================= */
+
+    function createDateSeparator(timestamp) {
+
+      const dateKey = getDateKey(timestamp);
+
+      if (knownDates.has(dateKey)) {
+        return;
+      }
+
+      knownDates.add(dateKey);
+
+      const separator =
         document.createElement("div");
 
-      empty.id =
-        "emptyChat";
+      separator.className = "date-separator";
 
-      empty.className =
-        "empty-chat";
+      separator.dataset.dateKey = dateKey;
 
-      empty.textContent =
-        "No messages yet.";
-
-
-      /*
-        Put empty message before
-        typing bubble.
-      */
+      separator.textContent =
+        getDateLabel(timestamp);
 
       messages.insertBefore(
-        empty,
+        separator,
+        typingBubble
+      );
+    }
+
+
+    function renderMessage(key, data) {
+
+      if (!data || !data.text) return;
+
+      const existing =
+        document.querySelector(
+          `[data-message-id="${key}"]`
+        );
+
+      if (existing) {
+        updateMessageUI(existing, data);
+        return;
+      }
+
+      createDateSeparator(data.timestamp);
+
+      const row =
+        document.createElement("div");
+
+      const isMine =
+        data.sender === currentUser.uid;
+
+      row.className =
+        "message-row " +
+        (isMine ? "mine" : "theirs");
+
+      row.dataset.messageId = key;
+
+      const bubble =
+        document.createElement("div");
+
+      bubble.className = "bubble";
+
+      const text =
+        document.createElement("div");
+
+      text.className = "message-text";
+
+      text.textContent = data.text;
+
+      const meta =
+        document.createElement("div");
+
+      meta.className = "message-meta";
+
+      const time =
+        document.createElement("span");
+
+      time.textContent =
+        formatTime(data.timestamp);
+
+      meta.appendChild(time);
+
+      if (isMine) {
+
+        const ticks =
+          document.createElement("span");
+
+        ticks.className =
+          "ticks " +
+          (data.read ? "read" : "");
+
+        ticks.textContent =
+          data.read ? "✓✓" : "✓";
+
+        meta.appendChild(ticks);
+      }
+
+      bubble.appendChild(text);
+      bubble.appendChild(meta);
+
+      row.appendChild(bubble);
+
+      messages.insertBefore(
+        row,
         typingBubble
       );
 
+      scrollToBottom();
+
+      /* Recipient has received the message */
+      if (
+        !isMine &&
+        data.read !== true
+      ) {
+
+        update(
+          ref(
+            database,
+            "messages/" + key
+          ),
+          {
+            read: true
+          }
+        ).catch(error => {
+          console.error(error);
+        });
+      }
+    }
+
+
+    function updateMessageUI(row, data) {
+
+      if (!currentUser) return;
+
+      if (data.sender !== currentUser.uid) {
+        return;
+      }
+
+      const ticks =
+        row.querySelector(".ticks");
+
+      if (!ticks) return;
+
+      if (data.read) {
+
+        ticks.textContent = "✓✓";
+
+        ticks.classList.add("read");
+
+      } else {
+
+        ticks.textContent = "✓";
+
+        ticks.classList.remove("read");
+      }
+    }
+
+
+    function startMessages() {
+
+      if (!currentUser) return;
+
+      const messagesRef =
+        ref(database, "messages");
+
+      if (stopMessageListener) {
+        stopMessageListener();
+      }
+
+      if (stopChangedListener) {
+        stopChangedListener();
+      }
 
       stopMessageListener =
         onChildAdded(
           messagesRef,
-          async (snapshot) => {
+          (snapshot) => {
 
-            const key =
-              snapshot.key;
+            const key = snapshot.key;
 
-            const data =
-              snapshot.val();
-
-
-            /*
-              These are system nodes,
-              not normal messages.
-            */
+            const data = snapshot.val();
 
             if (
               key === "__presence__" ||
               key === "__typing__"
             ) {
-
-              return;
-
-            }
-
-
-            if (!data || !data.text) {
               return;
             }
 
-
-            const emptyChat =
-              document.getElementById(
-                "emptyChat"
-              );
-
-
-            if (emptyChat) {
-              emptyChat.remove();
-            }
-
-
-            renderMessage(
-              key,
-              data
-            );
-
-
-            /*
-              Mark received message as read.
-            */
-
-            if (
-              currentUser &&
-              data.sender !==
-                currentUser.uid &&
-              data.read !== true
-            ) {
-
-              try {
-
-                await update(
-                  ref(
-                    database,
-                    "messages/" + key
-                  ),
-                  {
-                    read: true
-                  }
-                );
-
-              } catch (error) {
-
-                console.error(
-                  "Read receipt error:",
-                  error
-                );
-
-              }
-
-            }
-
+            renderMessage(key, data);
           }
         );
 
@@ -1664,446 +1410,64 @@
           messagesRef,
           (snapshot) => {
 
+            const key = snapshot.key;
+
+            const data = snapshot.val();
+
             if (
-              snapshot.key ===
-                "__presence__" ||
-              snapshot.key ===
-                "__typing__"
+              key === "__presence__" ||
+              key === "__typing__"
             ) {
-
               return;
-
             }
 
+            const row =
+              document.querySelector(
+                `[data-message-id="${key}"]`
+              );
 
-            updateRenderedMessage(
-              snapshot.key,
-              snapshot.val()
-            );
-
+            if (row) {
+              updateMessageUI(row, data);
+            }
           }
         );
-
     }
 
 
-    /* =========================
-       DATE
-    ========================== */
-
-    function dateKey(
-      timestamp
-    ) {
-
-      const d =
-        new Date(timestamp);
-
-
-      return (
-        d.getFullYear() +
-        "-" +
-        String(
-          d.getMonth() + 1
-        ).padStart(2, "0") +
-        "-" +
-        String(
-          d.getDate()
-        ).padStart(2, "0")
-      );
-
-    }
-
-
-    function dateLabel(
-      timestamp
-    ) {
-
-      const d =
-        new Date(timestamp);
-
-      const today =
-        new Date();
-
-      const yesterday =
-        new Date();
-
-
-      yesterday.setDate(
-        yesterday.getDate() - 1
-      );
-
-
-      const key =
-        dateKey(timestamp);
-
-      const todayKey =
-        dateKey(today);
-
-      const yesterdayKey =
-        dateKey(yesterday);
-
-
-      if (key === todayKey) {
-        return "Today";
-      }
-
-
-      if (key === yesterdayKey) {
-        return "Yesterday";
-      }
-
-
-      return d.toLocaleDateString(
-        [],
-        {
-          day: "numeric",
-          month: "long",
-          year: "numeric"
-        }
-      );
-
-    }
-
-
-    /* =========================
-       TIME
-    ========================== */
-
-    function formatTime(
-      timestamp
-    ) {
-
-      return new Date(
-        timestamp
-      ).toLocaleTimeString(
-        [],
-        {
-          hour: "2-digit",
-          minute: "2-digit"
-        }
-      );
-
-    }
-
-
-    /* =========================
-       RENDER MESSAGE
-    ========================== */
-
-    function renderMessage(
-      key,
-      data
-    ) {
-
-      if (!data.text) {
-        return;
-      }
-
-
-      const timestamp =
-        data.timestamp ||
-        Date.now();
-
-
-      /*
-        Date separator
-      */
-
-      const currentDate =
-        dateKey(timestamp);
-
-
-      if (
-        currentDate !==
-        previousDate
-      ) {
-
-        const separator =
-          document.createElement("div");
-
-        separator.className =
-          "date-separator";
-
-        separator.textContent =
-          dateLabel(timestamp);
-
-
-        /*
-          Insert separator before
-          typing bubble.
-        */
-
-        messages.insertBefore(
-          separator,
-          typingBubble
-        );
-
-
-        previousDate =
-          currentDate;
-
-      }
-
-
-      const row =
-        document.createElement("div");
-
-
-      const mine =
-        currentUser &&
-        data.sender ===
-          currentUser.uid;
-
-
-      row.className =
-        "message-row " +
-        (mine
-          ? "mine"
-          : "theirs");
-
-
-      row.dataset.messageId =
-        key;
-
-
-      const bubble =
-        document.createElement("div");
-
-
-      bubble.className =
-        "message " +
-        (mine
-          ? "mine"
-          : "theirs");
-
-
-      const text =
-        document.createElement("div");
-
-
-      text.className =
-        "message-text";
-
-      text.textContent =
-        data.text;
-
-
-      bubble.appendChild(
-        text
-      );
-
-
-      const meta =
-        document.createElement("div");
-
-
-      meta.className =
-        "message-meta";
-
-
-      const time =
-        document.createElement("span");
-
-
-      time.className =
-        "message-time";
-
-      time.textContent =
-        formatTime(timestamp);
-
-
-      meta.appendChild(
-        time
-      );
-
-
-      /*
-        Sent / Read ticks
-      */
-
-      if (mine) {
-
-        const ticks =
-          document.createElement("span");
-
-
-        ticks.className =
-          "ticks " +
-          (
-            data.read
-              ? "read"
-              : ""
-          );
-
-
-        ticks.textContent =
-          data.read
-            ? "✓✓"
-            : "✓";
-
-
-        ticks.dataset.ticks =
-          "true";
-
-
-        meta.appendChild(
-          ticks
-        );
-
-      }
-
-
-      bubble.appendChild(
-        meta
-      );
-
-
-      row.appendChild(
-        bubble
-      );
-
-
-      /*
-        Insert before typing bubble
-      */
-
-      messages.insertBefore(
-        row,
-        typingBubble
-      );
-
-
-      messages.scrollTop =
-        messages.scrollHeight;
-
-    }
-
-
-    /* =========================
-       READ RECEIPT UPDATE
-    ========================== */
-
-    function updateRenderedMessage(
-      key,
-      data
-    ) {
-
-      const row =
-        document.querySelector(
-          '[data-message-id="' +
-          key +
-          '"]'
-        );
-
-
-      if (!row) {
-        return;
-      }
-
-
-      const ticks =
-        row.querySelector(
-          '[data-ticks="true"]'
-        );
-
-
-      if (!ticks) {
-        return;
-      }
-
-
-      if (data.read) {
-
-        ticks.textContent =
-          "✓✓";
-
-        ticks.classList.add(
-          "read"
-        );
-
-      } else {
-
-        ticks.textContent =
-          "✓";
-
-        ticks.classList.remove(
-          "read"
-        );
-
-      }
-
-    }
-
-
-    /* =========================
-       SEND MESSAGE
-    ========================== */
+    /* ================= SEND ================= */
 
     async function sendMessage() {
 
-      if (!currentUser) {
-        return;
-      }
-
+      if (!currentUser) return;
 
       const text =
         messageInput.value.trim();
 
-
-      if (!text) {
-        return;
-      }
-
-
-      sendButton.disabled =
-        true;
-
+      if (!text) return;
 
       try {
 
-        clearTimeout(
-          typingTimer
-        );
-
-
-        await setTyping(
-          false
-        );
-
-
         await push(
-          messagesRef,
+          ref(database, "messages"),
           {
-
-            type:
-              "text",
-
-            text:
-              text,
-
-            sender:
-              currentUser.uid,
-
-            email:
-              currentUser.email ||
-              "",
-
-            timestamp:
-              Date.now(),
-
-            read:
-              false
-
+            type: "text",
+            text: text,
+            sender: currentUser.uid,
+            email: currentUser.email || "",
+            timestamp: Date.now(),
+            read: false
           }
         );
 
+        messageInput.value = "";
 
-        messageInput.value =
-          "";
+        clearTimeout(typingTimer);
 
+        await setTyping(false);
+
+        emojiPanel.style.display = "none";
 
         messageInput.focus();
-
 
       } catch (error) {
 
@@ -2112,13 +1476,7 @@
         alert(
           "Message send nahi hua. Please try again."
         );
-
       }
-
-
-      sendButton.disabled =
-        false;
-
     }
 
 
@@ -2140,40 +1498,210 @@
           event.preventDefault();
 
           sendMessage();
-
         }
 
       }
     );
 
 
-    /* =========================
-       LOGOUT
-    ========================== */
+    /* ================= EMOJI ================= */
+
+    emojiButton.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+        emojiPanel.style.display =
+          emojiPanel.style.display === "block"
+            ? "none"
+            : "block";
+      }
+    );
+
+
+    document
+      .querySelectorAll(".emoji-grid button")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            messageInput.value +=
+              button.textContent;
+
+            messageInput.focus();
+
+            messageInput.dispatchEvent(
+              new Event("input")
+            );
+          }
+        );
+
+      });
+
+
+    document.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          !emojiPanel.contains(event.target) &&
+          event.target !== emojiButton
+        ) {
+
+          emojiPanel.style.display = "none";
+        }
+
+      }
+    );
+
+
+    /* ================= GIF PLACEHOLDER ================= */
+
+    function gifComingSoon() {
+
+      alert(
+        "GIF search feature baad mein add karenge. ❤️"
+      );
+    }
+
+
+    gifButton.addEventListener(
+      "click",
+      gifComingSoon
+    );
+
+    gifHeaderButton.addEventListener(
+      "click",
+      gifComingSoon
+    );
+
+
+    /* ================= VIDEO PLACEHOLDER ================= */
+
+    videoButton.addEventListener(
+      "click",
+      () => {
+
+        alert(
+          "Video call feature abhi skip kiya hai. ❤️"
+        );
+
+      }
+    );
+
+
+    /* ================= CLEAR COMPLETE CHAT ================= */
+
+    clearChatButton.addEventListener(
+      "click",
+      async () => {
+
+        if (!currentUser) return;
+
+        const confirmed =
+          confirm(
+            "⚠️ Clear complete chat?\n\n" +
+            "All messages will be permanently deleted for both users.\n\n" +
+            "This action cannot be undone."
+          );
+
+        if (!confirmed) return;
+
+        clearChatButton.disabled = true;
+
+        clearChatButton.textContent =
+          "⏳";
+
+        try {
+
+          await remove(
+            ref(database, "messages")
+          );
+
+          messages.innerHTML = "";
+
+          messages.appendChild(
+            typingBubble
+          );
+
+          typingBubble.style.display =
+            "none";
+
+          knownDates.clear();
+
+          const empty =
+            document.createElement("div");
+
+          empty.className =
+            "empty-chat";
+
+          empty.innerHTML =
+            '<div class="heart">❤️</div>' +
+            '<div>No messages yet.</div>';
+
+          messages.insertBefore(
+            empty,
+            typingBubble
+          );
+
+          await startPresence();
+
+          await setTyping(false);
+
+          alert(
+            "Complete chat history deleted."
+          );
+
+        } catch (error) {
+
+          console.error(error);
+
+          alert(
+            "Could not clear chat. Please try again."
+          );
+        }
+
+        clearChatButton.disabled = false;
+
+        clearChatButton.textContent =
+          "🗑️";
+      }
+    );
+
+
+    /* ================= LOGOUT ================= */
 
     logoutButton.addEventListener(
       "click",
       async () => {
 
-        if (!currentUser) {
-          return;
-        }
+        if (!currentUser) return;
 
+        const confirmed =
+          confirm(
+            "Logout from Private Chat?"
+          );
 
-        clearTimeout(
-          typingTimer
-        );
-
-
-        await setTyping(
-          false
-        );
-
-
-        await setOffline();
-
+        if (!confirmed) return;
 
         try {
+
+          await setTyping(false);
+
+          await set(
+            ref(
+              database,
+              "messages/__presence__/" +
+              currentUser.uid
+            ),
+            {
+              online: false,
+              lastSeen: Date.now()
+            }
+          );
 
           await signOut(auth);
 
@@ -2187,257 +1715,109 @@
     );
 
 
-    /* =========================
-       CLEAR COMPLETE HISTORY
-    ========================== */
+    /* ================= AUTH STATE ================= */
 
-    clearChatButton.addEventListener(
-      "click",
-      async () => {
+    onAuthStateChanged(
+      auth,
+      async (user) => {
 
-        if (!currentUser) {
-          return;
-        }
+        currentUser = user;
 
+        if (user) {
 
-        const confirmed =
-          confirm(
-            "⚠️ Clear complete chat?\n\n" +
-            "All messages will be permanently deleted for both users.\n\n" +
-            "This action cannot be undone."
-          );
+          if (
+            user.uid !== USER_1 &&
+            user.uid !== USER_2
+          ) {
 
+            alert(
+              "This private chat is restricted to the two authorized users."
+            );
 
-        if (!confirmed) {
-          return;
-        }
+            await signOut(auth);
 
-
-        clearChatButton.disabled =
-          true;
-
-        clearChatButton.textContent =
-          "Deleting...";
+            return;
+          }
 
 
-        try {
+          loginScreen.style.display =
+            "none";
 
-          await remove(
-            messagesRef
-          );
-
-
-          messages.innerHTML =
-            "";
+          chatScreen.style.display =
+            "block";
 
 
-          const empty =
-            document.createElement("div");
+          /* Stop old listeners */
+
+          if (stopMessageListener) {
+            stopMessageListener();
+            stopMessageListener = null;
+          }
+
+          if (stopChangedListener) {
+            stopChangedListener();
+            stopChangedListener = null;
+          }
+
+          if (stopPresenceListener) {
+            stopPresenceListener();
+            stopPresenceListener = null;
+          }
+
+          if (stopTypingListener) {
+            stopTypingListener();
+            stopTypingListener = null;
+          }
 
 
-          empty.id =
-            "emptyChat";
+          /* Reset messages safely */
 
-
-          empty.className =
-            "empty-chat";
-
-
-          empty.textContent =
-            "No messages yet.";
-
-
-          messages.appendChild(
-            empty
-          );
-
+          messages.innerHTML = "";
 
           messages.appendChild(
             typingBubble
           );
 
+          typingBubble.style.display =
+            "none";
 
-          typingBubble.classList.remove(
-            "show"
+          knownDates.clear();
+
+
+          /* Start systems */
+
+          await startPresence();
+
+          startOtherUserPresence();
+
+          startTypingListener();
+
+          startMessages();
+
+          messageInput.focus();
+
+        } else {
+
+          loginScreen.style.display =
+            "flex";
+
+          chatScreen.style.display =
+            "none";
+
+          messages.innerHTML = "";
+
+          messages.appendChild(
+            typingBubble
           );
 
+          typingBubble.style.display =
+            "none";
 
-          previousDate =
-            "";
+          knownDates.clear();
 
-
-          await setOnline();
-
-
-          alert(
-            "Complete chat history deleted."
-          );
-
-
-        } catch (error) {
-
-          console.error(error);
-
-          alert(
-            "Could not clear chat. Please try again."
-          );
+          setStatus("Offline");
 
         }
-
-
-        clearChatButton.disabled =
-          false;
-
-        clearChatButton.textContent =
-          "🗑️";
-
-      }
-    );
-
-
-    /* =========================
-       EMOJIS
-    ========================== */
-
-    const emojis = [
-
-      "😀","😃","😄","😁","😆","😅","😂","🤣",
-      "😊","😇","🙂","🙃","😉","😌","😍","🥰",
-      "😘","😗","😙","😚","😋","😛","😝","😜",
-      "🤪","🤨","🧐","🤓","😎","🥳","🤩","🥺",
-      "😢","😭","😤","😡","🤬","😱","😨","😳",
-      "🤗","🤔","🫡","🤭","🤫","😐","😑","😶",
-      "🙄","😏","😴","🤤","😷","🤒","🤕","🤮",
-      "❤️","🧡","💛","💚","💙","💜","🖤","🤍",
-      "💔","💕","💖","💗","💓","💞","💘","💝",
-      "👍","👎","👌","✌️","🤞","🙏","👏","🙌",
-      "💪","🤝","👋","🤌","👀","🔥","✨","⭐",
-      "🎉","🎊","❤️‍🔥","💯","✅","❌","😄","😍",
-      "🍕","🍔","🍟","🌭","🍎","🍌","🍉","🍓",
-      "☕","🍵","🥤","🎂","🍫","🍿","🍪","🥳"
-
-    ];
-
-
-    emojis.forEach(
-      (emoji) => {
-
-        const button =
-          document.createElement(
-            "button"
-          );
-
-
-        button.className =
-          "emoji-item";
-
-
-        button.type =
-          "button";
-
-
-        button.textContent =
-          emoji;
-
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            messageInput.value +=
-              emoji;
-
-            messageInput.focus();
-
-            setTyping(true);
-
-          }
-        );
-
-
-        emojiGrid.appendChild(
-          button
-        );
-
-      }
-    );
-
-
-    emojiButton.addEventListener(
-      "click",
-      (event) => {
-
-        event.stopPropagation();
-
-        emojiPicker.classList.toggle(
-          "show"
-        );
-
-      }
-    );
-
-
-    document.addEventListener(
-      "click",
-      (event) => {
-
-        if (
-          !emojiPicker.contains(
-            event.target
-          ) &&
-          event.target !==
-            emojiButton
-        ) {
-
-          emojiPicker.classList.remove(
-            "show"
-          );
-
-        }
-
-      }
-    );
-
-
-    /* =========================
-       GIF
-    ========================== */
-
-    gifButton.addEventListener(
-      "click",
-      () => {
-
-        alert(
-          "GIF search feature baad mein add karenge."
-        );
-
-      }
-    );
-
-
-    gifInputButton.addEventListener(
-      "click",
-      () => {
-
-        alert(
-          "GIF search feature baad mein add karenge."
-        );
-
-      }
-    );
-
-
-    /* =========================
-       VIDEO CALL
-    ========================== */
-
-    videoButton.addEventListener(
-      "click",
-      () => {
-
-        alert(
-          "Video call feature abhi skip kiya hai."
-        );
 
       }
     );
